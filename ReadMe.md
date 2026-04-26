@@ -1,8 +1,8 @@
 # Weekly Winner
 
-> **版本：** `4.0.1`
+> **版本：** `4.0.3`
 > **最後更新：** 2026-04-26
-> **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
+> **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK + Axios
 
 ---
 
@@ -18,7 +18,7 @@
 | Styling | Tailwind CSS 4（`@tailwindcss/vite`）+ shadcn-vue（CSS Variables） |
 | UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar） |
 | Icons | Lucide Vue Next |
-| HTTP | Native `fetch` wrapper（`src/api/http.ts`） |
+| HTTP | Axios（`src/api/request.ts` 認證用 / `src/api/publicRequest.ts` 公開 API 用） |
 | Auth | LINE LIFF SDK `@line/liff` |
 | Linting | ESLint 9（flat config）+ `typescript-eslint` + `eslint-plugin-vue` |
 | Formatting | Prettier 3 + `prettier-plugin-tailwindcss` |
@@ -48,7 +48,11 @@ npm run build
 ```
 src/
 ├── api/                        # HTTP 請求層
-│   └── http.ts
+│   ├── http.ts                 #   舊版 fetch 封裝（保留）
+│   ├── request.ts              #   Axios 封裝（認證請求）
+│   ├── publicRequest.ts        #   Axios 封裝（公開 API，無 Auth）
+│   └── modules/
+│       └── stock.ts            #   台股加權指數 API
 ├── assets/
 │   ├── img/                    # 靜態圖片（Logo SVG…）
 │   └── styles/
@@ -69,6 +73,7 @@ src/
 ├── composables/                # 組合式函式
 │   ├── useAsyncData.ts
 │   ├── useLiff.ts              #   LINE LIFF SDK 封裝（單例模式）
+│   ├── useMarketIndex.ts       #   加權指數（真實 API + fallback）
 │   ├── useMockData.ts
 │   └── useMockPortfolio.ts
 ├── constants/
@@ -90,6 +95,7 @@ src/
 │   │   └── user.d.ts
 │   └── module/                 # 功能模組型別（.ts，需 export/import）
 │       ├── dashboard.ts
+│       ├── market.ts
 │       ├── report.ts
 │       └── trade.ts
 ├── utils/
@@ -158,7 +164,7 @@ src/
 
 | 路徑 | 名稱 | 說明 |
 | --- | --- | --- |
-| `/` | dashboard | 大盤指數 + 選股週報 / 投資記事 Tab |
+| `/` | dashboard | 加權指數（即時 API）+ 選股週報 / 投資記事 Tab |
 | `/stock/:symbol` | stock-detail | 股票詳情（報價 + K 線占位 + 基本面） |
 | `/portfolio` | portfolio | 資產分析（LiquidCard + 持股比例 + 明細） |
 | `/records` | records | 收益統計（週期卡片 + 操作日誌 Tab） |
@@ -176,3 +182,5 @@ src/
 | `3.0.0` | 2026-04-26 | LINE LIFF SDK 整合、型別系統重構（shared / module 分層）、DefaultLayout 統一佈局 |
 | `4.0.0` | 2026-04-26 | 調整手機上的光暈效果 |
 | `4.0.1` | 2026-04-26 | 新增Web版Line登入功能，調整登入流程 |
+| `4.0.2` | 2026-04-26 | 台股指數 API 串接（證交所 TAIEX + 櫃買 TWO）、Axios 封裝、Vite Proxy、Loading/Error 狀態 |
+| `4.0.3` | 2026-04-26 | 移除櫃買指數（CORS 無解），修正 FMTQIK 欄位對應（成交金額=成交量），單一加權指數卡片 |

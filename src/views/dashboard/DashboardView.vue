@@ -1,20 +1,18 @@
 <script setup lang="ts">
+import { RefreshCw } from 'lucide-vue-next';
 import DefaultLayout from '@/components/layout/DefaultLayout.vue';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import MarketIndexCard from './components/MarketIndexCard.vue';
 import ReportCard from './components/ReportCard.vue';
 import NoteCard from './components/NoteCard.vue';
-import { useMarketIndices } from '@/composables/useMockData';
+import { useMarketIndex } from '@/composables/useMarketIndex';
 import type { WeeklyReport, InvestNote } from './types';
 
-const allIndices = useMarketIndices();
-const indices = allIndices.filter(
-  (idx) => idx.name === '加權指數' || idx.name === '櫃買指數',
-);
+const { index, loading, error, refresh } = useMarketIndex();
 
 const reports: WeeklyReport[] = [
   {
-    id: '0419',
+    id: '0419',               
     title: '04/19 選股週報',
     date: '2026-04-19',
     tags: ['台積電', '聯發科', '廣達', '緯創'],
@@ -84,16 +82,30 @@ const notes: InvestNote[] = [
 
 <template>
   <DefaultLayout title="市場行情" subtitle="當前股市即時行情">
-    <!-- 大盤指數 -->
-    <section class="grid grid-cols-1 gap-3 md:grid-cols-2">
+    <!-- 加權指數 -->
+    <section class="flex flex-col gap-3">
+      <div v-if="error" class="flex items-center justify-between rounded-xl bg-brand-muted px-4 py-2">
+        <p class="text-xs text-muted-foreground">{{ error }}</p>
+        <button
+          class="flex items-center gap-1 text-xs font-medium text-brand transition hover:opacity-80"
+          :disabled="loading"
+          @click="refresh"
+        >
+          <RefreshCw :size="12" :stroke-width="2" :class="loading ? 'animate-spin' : ''" />
+          <span>重試</span>
+        </button>
+      </div>
+
+      <div v-if="loading && !index.updatedAt" class="h-44 animate-pulse rounded-liquid bg-muted" />
+
       <MarketIndexCard
-        v-for="idx in indices"
-        :key="idx.name"
-        :name="idx.name"
-        :value="idx.value"
-        :change="idx.change"
-        :change-percent="idx.changePercent"
-        :volume="idx.volume"
+        v-else
+        :name="index.name"
+        :value="index.value"
+        :change="index.change"
+        :change-percent="index.changePercent"
+        :volume="index.volume"
+        :updated-at="index.updatedAt"
       />
     </section>
 
@@ -105,19 +117,11 @@ const notes: InvestNote[] = [
       </TabsList>
 
       <TabsContent value="reports" class="flex flex-col gap-3">
-        <ReportCard
-          v-for="report in reports"
-          :key="report.id"
-          :report="report"
-        />
+        <ReportCard v-for="report in reports" :key="report.id" :report="report" />
       </TabsContent>
 
       <TabsContent value="notes" class="flex flex-col gap-3">
-        <NoteCard
-          v-for="note in notes"
-          :key="note.id"
-          :note="note"
-        />
+        <NoteCard v-for="note in notes" :key="note.id" :note="note" />
       </TabsContent>
     </Tabs>
   </DefaultLayout>

@@ -9,9 +9,12 @@ interface Props {
   change: number;
   changePercent: number;
   volume: number;
+  updatedAt?: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  updatedAt: undefined,
+});
 
 const isPositive = computed((): boolean => props.change >= 0);
 </script>
@@ -21,7 +24,7 @@ const isPositive = computed((): boolean => props.change >= 0);
     <div class="flex flex-col gap-3 p-5">
       <!-- 標題 + 漲跌圖標 -->
       <div class="flex items-center justify-between">
-        <p class="text-xs font-medium tracking-wide text-muted-foreground">{{ props.name }}</p>
+        <p class="text-[16px] font-bold tracking-wide text-brand">{{ props.name }}</p>
         <div
           class="flex h-7 w-7 items-center justify-center rounded-lg"
           :class="isPositive ? 'bg-gain/8' : 'bg-loss/8'"
@@ -45,11 +48,14 @@ const isPositive = computed((): boolean => props.change >= 0);
         ({{ isPositive ? '+' : '' }}{{ props.changePercent.toFixed(2) }}%)
       </span>
 
-      <!-- 成交量 -->
+      <!-- 成交量 + 更新時間 -->
       <div class="flex items-center justify-between border-t border-border pt-3">
-        <span class="text-xs text-muted-foreground">成交量</span>
-        <span class="text-xs font-medium tabular-nums text-foreground">
-          {{ props.volume.toLocaleString() }} 億
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-muted-foreground">成交量</span>
+          <span class="text-xs font-medium tabular-nums text-foreground">{{ props.volume.toLocaleString() }} 億</span>
+        </div>
+        <span v-if="props.updatedAt" class="text-[10px] tabular-nums text-muted-foreground/60">
+          {{ props.updatedAt }}
         </span>
       </div>
     </div>

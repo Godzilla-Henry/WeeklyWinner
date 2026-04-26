@@ -13,5 +13,15 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
+    proxy: {
+      '/twse': {
+        target: 'https://www.twse.com.tw',
+        changeOrigin: true,
+        rewrite: (path: string) => path.replace(/^\/twse/, ''),
+        headers: {
+          Referer: 'https://www.twse.com.tw/',
+        },
+      },
+    },
   },
 });

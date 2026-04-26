@@ -14,6 +14,11 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
 
+    /* Vue TypeScript Plugin — 啟用 .vue 檔案的 Go to Definition */
+    "plugins": [
+      { "name": "@vue/typescript-plugin" }
+    ],
+
     /* 路徑別名 */
     "baseUrl": ".",
     "paths": {
