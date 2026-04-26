@@ -8,6 +8,9 @@
 import publicRequest from '@/api/publicRequest';
 import type { MarketIndexData } from '@/types/module/market';
 
+/** 證交所 API base — 開發走 proxy，正式直連 */
+const TWSE_BASE = import.meta.env.VITE_TWSE_BASE_URL ?? '/twse';
+
 /** 移除逗號並轉為 number */
 function parseNumber(raw: string): number {
   const num = Number(raw.replace(/,/g, '').trim());
@@ -38,7 +41,7 @@ interface TwseFmtqikResponse {
  */
 export async function fetchTaiex(): Promise<MarketIndexData> {
   const res = await publicRequest.get<TwseFmtqikResponse>(
-    `/twse/exchangeReport/FMTQIK?response=json&date=${getTodayString()}`,
+    `${TWSE_BASE}/exchangeReport/FMTQIK?response=json&date=${getTodayString()}`,
   );
 
   const raw = res.data;

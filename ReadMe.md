@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `4.0.3`
+> **版本：** `4.0.4`
 > **最後更新：** 2026-04-26
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK + Axios
 
@@ -150,6 +150,97 @@ src/
 
 ---
 
+## 台股指數 API
+
+資料來源：[證交所 TWSE](https://www.twse.com.tw) FMTQIK（每月各日成交資訊）
+
+### API Endpoint
+
+```
+GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
+```
+
+回傳 `data` 每列欄位：
+
+| Index | 欄位 |
+| --- | --- |
+| 0 | 日期 |
+| 1 | 成交股數 |
+| 2 | 成交金額（作為成交量顯示，換算為億元） |
+| 3 | 成交筆數 |
+| 4 | 發行量加權股價指數 |
+| 5 | 漲跌點數 |
+
+### 環境變數
+
+透過 `VITE_TWSE_BASE_URL` 控制 API base path，兩個環境都使用 `/twse` 前綴：
+
+| 檔案 | 值 | 說明 |
+| --- | --- | --- |
+| `.env.development` | `/twse` | Vite dev server proxy 攔截轉發 |
+| `.env.production` | `/twse` | Netlify `_redirects` proxy 轉發 |
+
+### Proxy 機制
+
+證交所 API 有 CORS 限制，前端無法直連，需透過 proxy 轉發：
+
+**開發環境（Vite proxy）**
+
+```
+瀏覽器 → localhost:5173/twse/exchangeReport/FMTQIK?...
+       → Vite proxy rewrite 移除 /twse 前綴
+       → 轉發至 https://www.twse.com.tw/exchangeReport/FMTQIK?...
+```
+
+設定位於 `vite.config.ts`：
+
+```typescript
+proxy: {
+  '/twse': {
+    target: 'https://www.twse.com.tw',
+    changeOrigin: true,
+    rewrite: (path) => path.replace(/^\/twse/, ''),
+    headers: { Referer: 'https://www.twse.com.tw/' },
+  },
+}
+```
+
+**正式環境（Netlify proxy）**
+
+```
+瀏覽器 → weeklywinner.netlify.app/twse/exchangeReport/FMTQIK?...
+       → Netlify _redirects rewrite
+       → 轉發至 https://www.twse.com.tw/exchangeReport/FMTQIK?...
+```
+
+設定位於 `public/_redirects`：
+
+```
+/twse/*  https://www.twse.com.tw/:splat  200
+/*       /index.html                     200
+```
+
+### 錯誤處理
+
+- API 失敗時自動 fallback 至 Mock 資料，確保 UI 不空白
+- Dashboard 顯示錯誤提示條 + 重試按鈕
+- `useMarketIndex` composable 提供 `loading` / `error` / `refresh` 狀態
+
+---
+
+## 功能狀態
+
+| 功能 | 狀態 | 說明 |
+| --- | --- | --- |
+| Dashboard（加權指數 + 週報 + 記事） | ✅ 已上線 | 即時 API + fallback |
+| 選股週報詳細頁 | ✅ 已上線 | 9 欄選股標的表格 |
+| 個人設定 | ✅ 已上線 | 帳戶安全 / 推播 / 顯示偏好 |
+| LINE LIFF 登入 | ✅ 已上線 | Web + LINE 內建瀏覽器 |
+| 股市資產（Portfolio） | 🚧 開發中 | ComingSoon 遮罩 |
+| 收益統計（Records） | 🚧 開發中 | ComingSoon 遮罩 |
+
+---
+
 ## 設計系統
 
 - 品牌色：`#E8920A`（Logo 橘），定義為 `--brand`
@@ -184,3 +275,4 @@ src/
 | `4.0.1` | 2026-04-26 | 新增Web版Line登入功能，調整登入流程 |
 | `4.0.2` | 2026-04-26 | 台股指數 API 串接（證交所 TAIEX + 櫃買 TWO）、Axios 封裝、Vite Proxy、Loading/Error 狀態 |
 | `4.0.3` | 2026-04-26 | 移除櫃買指數（CORS 無解），修正 FMTQIK 欄位對應（成交金額=成交量），單一加權指數卡片 |
+| `4.0.4` | 2026-04-26 | 環境變數區分正式/開發 API proxy、Netlify `_redirects` 設定、Portfolio/Records 加入 ComingSoon 遮罩 |
