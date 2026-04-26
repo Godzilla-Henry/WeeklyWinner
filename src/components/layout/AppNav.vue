@@ -23,10 +23,10 @@ const currentPath = computed((): string => route.path);
 
 <template>
   <div class="fixed bottom-5 left-0 right-0 z-50 flex justify-center px-6">
-    <nav class="relative flex items-center gap-1.5 overflow-hidden rounded-pill bg-white/70 px-2.5 py-2 shadow-(--shadow-liquid) backdrop-blur-xl">
-      <!-- 流體光斑 -->
-      <div class="pointer-events-none absolute -left-4 -top-4 h-20 w-20 rounded-full bg-amber-400/12 blur-2xl" />
-      <div class="pointer-events-none absolute -bottom-3 -right-3 h-16 w-16 rounded-full bg-orange-400/10 blur-2xl" />
+    <nav class="relative flex items-center gap-1.5 overflow-clip rounded-pill bg-white/70 px-2.5 py-2 shadow-(--shadow-liquid) backdrop-blur-xl">
+      <!-- 流體光斑 — GPU 合成層 -->
+      <div class="glow-orb pointer-events-none absolute -left-2 -top-2 h-16 w-16 rounded-full bg-amber-400/10 blur-xl" />
+      <div class="glow-orb pointer-events-none absolute -bottom-2 -right-2 h-14 w-14 rounded-full bg-orange-400/8 blur-xl" />
 
       <RouterLink
         v-for="item in navItems"

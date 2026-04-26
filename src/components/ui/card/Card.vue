@@ -15,15 +15,14 @@ const delegatedProps = computed(() => {
 <template>
   <div
     :class="cn(
-      'relative overflow-hidden rounded-liquid bg-white text-card-foreground shadow-(--shadow-card) transition-all duration-300 hover:shadow-(--shadow-card-hover)',
+      'noise-overlay relative overflow-clip rounded-liquid bg-white text-card-foreground shadow-(--shadow-card) transition-all duration-300 hover:shadow-(--shadow-card-hover)',
       props.class,
     )"
     v-bind="delegatedProps"
   >
-    <!-- 流體光斑裝飾 -->
-    <div class="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-amber-400/8 blur-3xl" />
-    <div class="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-orange-400/12 blur-3xl" />
-    <div class="pointer-events-none absolute right-1/3 top-1/2 h-24 w-24 rounded-full bg-orange-300/8 blur-2xl" />
+    <!-- 流體光斑 — GPU 合成層 + 內縮避免裁切硬邊 -->
+    <div class="glow-orb pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-amber-400/8 blur-2xl" />
+    <div class="glow-orb pointer-events-none absolute -bottom-4 -left-4 h-28 w-28 rounded-full bg-orange-400/6 blur-2xl" />
 
     <div class="relative">
       <slot />
