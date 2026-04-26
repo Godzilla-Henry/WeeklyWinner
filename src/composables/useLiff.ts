@@ -44,6 +44,12 @@ function init(): Promise<void> {
       initialized.value = true;
       loggedIn.value = liff.isLoggedIn();
       inClient.value = liff.isInClient();
+
+      /* 清理 URL 上 LIFF 注入的 query params，避免重複初始化或 redirectUri 不匹配 */
+      if (!inClient.value && window.location.search.includes('liff.state')) {
+        const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+        window.history.replaceState(null, '', cleanUrl);
+      }
     })
     .catch((e: unknown) => {
       const message = e instanceof Error ? e.message : '初始化失敗';
@@ -59,12 +65,13 @@ function init(): Promise<void> {
 
 /**
  * 登入
- * 記錄當前路徑，登入後導回原頁面
+ * 使用乾淨的 URL（不帶 query/hash）避免 LIFF 400 Bad Request
  */
 function login(): void {
   if (!initialized.value) return;
 
-  const redirectUri = window.location.href;
+  const { origin, pathname } = window.location;
+  const redirectUri = `${origin}${pathname}`;
   liff.login({ redirectUri });
 }
 

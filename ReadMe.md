@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `3.0.0`
+> **版本：** `4.0.1`
 > **最後更新：** 2026-04-26
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -175,3 +175,4 @@ src/
 | `2.0.0` | 2026-04-25 | 架構升級：shadcn-vue + 功能導向結構 + Liquid Design |
 | `3.0.0` | 2026-04-26 | LINE LIFF SDK 整合、型別系統重構（shared / module 分層）、DefaultLayout 統一佈局 |
 | `4.0.0` | 2026-04-26 | 調整手機上的光暈效果 |
+| `4.0.1` | 2026-04-26 | 新增Web版Line登入功能，調整登入流程 |
