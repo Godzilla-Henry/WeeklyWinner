@@ -1,0 +1,124 @@
+<script setup lang="ts">
+import DefaultLayout from '@/components/layout/DefaultLayout.vue';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import MarketIndexCard from './components/MarketIndexCard.vue';
+import ReportCard from './components/ReportCard.vue';
+import NoteCard from './components/NoteCard.vue';
+import { useMarketIndices } from '@/composables/useMockData';
+import type { WeeklyReport, InvestNote } from './types';
+
+const allIndices = useMarketIndices();
+const indices = allIndices.filter(
+  (idx) => idx.name === '加權指數' || idx.name === '櫃買指數',
+);
+
+const reports: WeeklyReport[] = [
+  {
+    id: '0419',
+    title: '04/19 選股週報',
+    date: '2026-04-19',
+    tags: ['台積電', '聯發科', '廣達', '緯創'],
+    summary: 'AI 伺服器需求持續攀升，輝達新一代晶片帶動台系 ODM 廠訂單能見度延伸至 Q3，科技股維持偏多格局。',
+  },
+  {
+    id: '0412',
+    title: '04/12 選股週報',
+    date: '2026-04-12',
+    tags: ['鴻海', '台達電', '日月光'],
+    summary: '電動車與 AI 雙引擎驅動，功率半導體與封測族群營收季增雙位數，留意拉回佈局時機。',
+  },
+  {
+    id: '0405',
+    title: '04/05 選股週報',
+    date: '2026-04-05',
+    tags: ['富邦金', '國泰金', '中信金'],
+    summary: '央行利率決議維持不變，市場預期下半年降息機率升高，壽險股短線承壓但長線具配息吸引力。',
+  },
+  {
+    id: '0331',
+    title: '03/31 選股週報',
+    date: '2026-03-31',
+    tags: ['長榮', '陽明', '萬海'],
+    summary: '紅海危機持續推升運價，貨櫃三雄 Q1 獲利優於預期，關注旺季前的運價走勢。',
+  },
+];
+
+const notes: InvestNote[] = [
+  {
+    id: 'n1',
+    category: 'direction',
+    title: '短線偏多，留意量能變化',
+    content: '加權指數站穩季線之上，短線維持偏多操作。若量能未能持續放大，建議降低追價意願，以拉回佈局為主。',
+    date: '2026-04-25',
+  },
+  {
+    id: 'n2',
+    category: 'indicator',
+    title: 'VIX 恐慌指數回落至 14',
+    content: 'CBOE VIX 指數從上週的 18.5 回落至 14.2，顯示市場恐慌情緒降溫，有利於風險性資產表現。',
+    date: '2026-04-24',
+  },
+  {
+    id: 'n3',
+    category: 'event',
+    title: '聯準會利率決議下週登場',
+    content: '市場預期維持利率不變，但關注點在於點陣圖是否釋出年內降息訊號。建議決議前減少槓桿部位。',
+    date: '2026-04-23',
+  },
+  {
+    id: 'n4',
+    category: 'direction',
+    title: '航運股短線獲利了結',
+    content: '貨櫃三雄近兩週漲幅已達 12-15%，短線乖離偏大。建議分批獲利了結，等待運價數據確認後再行佈局。',
+    date: '2026-04-22',
+  },
+  {
+    id: 'n5',
+    category: 'indicator',
+    title: '外資連三日買超台股',
+    content: '外資本週累計買超 285 億元，主要集中在半導體與金融權值股，為近一個月最大單週買超。',
+    date: '2026-04-21',
+  },
+];
+</script>
+
+<template>
+  <DefaultLayout title="市場行情" subtitle="當前股市即時行情">
+    <!-- 大盤指數 -->
+    <section class="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <MarketIndexCard
+        v-for="idx in indices"
+        :key="idx.name"
+        :name="idx.name"
+        :value="idx.value"
+        :change="idx.change"
+        :change-percent="idx.changePercent"
+        :volume="idx.volume"
+      />
+    </section>
+
+    <!-- Tab 區域 -->
+    <Tabs default-value="reports">
+      <TabsList>
+        <TabsTrigger value="reports">選股週報</TabsTrigger>
+        <TabsTrigger value="notes">投資記事</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="reports" class="flex flex-col gap-3">
+        <ReportCard
+          v-for="report in reports"
+          :key="report.id"
+          :report="report"
+        />
+      </TabsContent>
+
+      <TabsContent value="notes" class="flex flex-col gap-3">
+        <NoteCard
+          v-for="note in notes"
+          :key="note.id"
+          :note="note"
+        />
+      </TabsContent>
+    </Tabs>
+  </DefaultLayout>
+</template>

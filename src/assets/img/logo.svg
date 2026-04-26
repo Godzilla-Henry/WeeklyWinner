@@ -1,0 +1,27 @@
+<svg width="400" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+  <title>Weekly Winner Logo</title>
+  <desc>Weekly Winner logo with WW monogram mark and stacked wordmark</desc>
+
+  <!-- WW monogram mark -->
+  <path d="M10 15 L22 75 L36 40 L50 75 L62 15" fill="none" stroke="#1A1A1A" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M36 15 L48 75 L62 40 L76 75 L88 15" fill="none" stroke="#E8920A" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Divider line -->
+  <rect x="108" y="15" width="1.5" height="70" fill="#CCCCCC"/>
+
+  <!-- WEEKLY text -->
+  <text x="122" y="46"
+    font-family="'Barlow Condensed', 'Arial Narrow', 'Oswald', Arial, sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#1A1A1A"
+    letter-spacing="3">WEEKLY</text>
+
+  <!-- WINNER text -->
+  <text x="122" y="80"
+    font-family="'Barlow Condensed', 'Arial Narrow', 'Oswald', Arial, sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#E8920A"
+    letter-spacing="3">WINNER</text>
+</svg>
