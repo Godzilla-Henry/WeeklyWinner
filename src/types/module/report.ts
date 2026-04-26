@@ -1,5 +1,5 @@
 /** 選股標的類型 */
-export type StockType = '多方' | '空方' | '觀望';
+export type StockType = '技術面強勢' | '技術面轉強' | '主力買進';
 
 /** 選股標的 */
 export interface StockSelection {

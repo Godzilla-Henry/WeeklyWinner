@@ -11,9 +11,9 @@ interface Props {
 const props = defineProps<Props>();
 
 /** 類型對應 Badge 變體 */
-function typeVariant(type: StockType): 'gain' | 'loss' | 'secondary' {
-  if (type === '多方') return 'gain';
-  if (type === '空方') return 'loss';
+function typeVariant(type: StockType): 'gain' | 'brand' | 'secondary' {
+  if (type === '技術面強勢') return 'gain';
+  if (type === '技術面轉強') return 'brand';
   return 'secondary';
 }
 
@@ -32,15 +32,15 @@ function biasClass(value: number): string {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead class="min-w-28">股票</TableHead>
-              <TableHead>類型</TableHead>
-              <TableHead>產業</TableHead>
-              <TableHead>基本面</TableHead>
-              <TableHead>技術面</TableHead>
-              <TableHead class="text-right">收盤價</TableHead>
-              <TableHead class="text-right">20MA</TableHead>
-              <TableHead class="text-right">月線乖離</TableHead>
-              <TableHead class="text-right">目標價</TableHead>
+              <TableHead class="min-w-20">股票</TableHead>
+              <TableHead class="min-w-28">類型</TableHead>
+              <TableHead class="min-w-40">產業</TableHead>
+              <TableHead class="min-w-40">基本面</TableHead>
+              <TableHead class="min-w-40">技術面</TableHead>
+              <TableHead class="min-w-28 text-right">收盤價</TableHead>
+              <TableHead class="min-w-28 text-right">20MA</TableHead>
+              <TableHead class="min-w-28 text-right">月線乖離</TableHead>
+              <TableHead class="min-w-28 text-right">目標價</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
