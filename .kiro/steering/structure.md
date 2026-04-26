@@ -31,6 +31,9 @@ src/
 │
 ├── stores/                     # Pinia 狀態管理 — 以 `use___Store` 命名
 ├── types/                      # 全域型別定義（.d.ts）— 僅 interface / type
+│   ├── shared/
+│   │   └── xxx.d.ts            # 全域型別定義（.d.ts）
+│   └── moudule/                # 功能頁面需要使用的type（.ts）
 ├── utils/                      # 純工具函式 — 無副作用、無框架依賴
 │
 ├── views/                      # 功能模組（每個頁面一個資料夾）

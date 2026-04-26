@@ -1,5 +1,7 @@
 /** 資產分析與交易紀錄模擬資料 */
 
+import type { TradeRecord, PeriodSummary } from '@/types/module/trade';
+
 export function useHoldings(): HoldingItem[] {
   return [
     { symbol: '2330', name: '台積電', shares: 5000, avgCost: 850, currentPrice: 908, profitLoss: 290000, profitLossPercent: 6.82, weight: 42 },

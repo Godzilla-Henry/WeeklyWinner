@@ -1,5 +1,7 @@
 /** 週報詳細頁面的 Mock 資料 */
 
+import type { WeeklyReportDetail } from '@/types/module/report';
+
 export function getReportById(id: string): WeeklyReportDetail | undefined {
   return reports.find((r) => r.id === id);
 }

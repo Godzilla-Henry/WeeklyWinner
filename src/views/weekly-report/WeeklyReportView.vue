@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft } from 'lucide-vue-next';
 import SelectionTable from './components/SelectionTable.vue';
 import { getReportById } from './types';
+import type { WeeklyReportDetail } from '@/types/module/report';
 
 const route = useRoute();
 const router = useRouter();

@@ -1,8 +1,8 @@
 /** 交易操作類型 */
-type TradeAction = 'buy' | 'sell';
+export type TradeAction = 'buy' | 'sell';
 
 /** 操作日誌 */
-interface TradeRecord {
+export interface TradeRecord {
   id: string;
   symbol: string;
   name: string;
@@ -14,7 +14,7 @@ interface TradeRecord {
 }
 
 /** 週期統計 */
-interface PeriodSummary {
+export interface PeriodSummary {
   label: string;
   period: 'weekly' | 'monthly' | 'yearly';
   totalProfitLoss: number;

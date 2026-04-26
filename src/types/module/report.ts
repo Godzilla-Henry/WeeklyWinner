@@ -1,8 +1,8 @@
 /** 選股標的類型 */
-type StockType = '多方' | '空方' | '觀望';
+export type StockType = '多方' | '空方' | '觀望';
 
 /** 選股標的 */
-interface StockSelection {
+export interface StockSelection {
   symbol: string;
   name: string;
   type: StockType;
@@ -16,7 +16,7 @@ interface StockSelection {
 }
 
 /** 週報詳細資料 */
-interface WeeklyReportDetail {
+export interface WeeklyReportDetail {
   id: string;
   title: string;
   date: string;
