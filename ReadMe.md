@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `4.0.4`
+> **版本：** `4.0.5`
 > **最後更新：** 2026-04-26
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK + Axios
 
@@ -16,7 +16,7 @@
 | State | Pinia 2 + `pinia-plugin-persistedstate` |
 | Routing | Vue Router 4（HTML5 history mode） |
 | Styling | Tailwind CSS 4（`@tailwindcss/vite`）+ shadcn-vue（CSS Variables） |
-| UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar） |
+| UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar, Skeleton, DropdownMenu） |
 | Icons | Lucide Vue Next |
 | HTTP | Axios（`src/api/request.ts` 認證用 / `src/api/publicRequest.ts` 公開 API 用） |
 | Auth | LINE LIFF SDK `@line/liff` |
@@ -59,15 +59,18 @@ src/
 │       └── index.css           # Tailwind v4 入口 + CSS 變數主題
 ├── components/
 │   ├── layout/                 # 佈局元件
-│   │   ├── AppNav.vue          #   懸浮膠囊導航列
-│   │   ├── DefaultLayout.vue   #   統一頁面佈局（gap-6 間距系統）
-│   │   └── TheHeader.vue       #   頂部導航（Logo + 通知 + LIFF 頭像）
+│   │   ├── AppNav.vue          #   懸浮膠囊導航列（disabled 狀態支援）
+│   │   ├── ComingSoon.vue     #   開發中功能遮罩頁
+│   │   ├── DefaultLayout.vue  #   統一頁面佈局（gap-6 間距系統）
+│   │   └── TheHeader.vue      #   頂部導航（Logo + 通知 + LIFF 頭像 + DropdownMenu）
 │   └── ui/                     # shadcn-vue 元件
 │       ├── avatar/
 │       ├── badge/
 │       ├── card/
 │       ├── dialog/
+│       ├── dropdown-menu/
 │       ├── separator/
+│       ├── skeleton/
 │       ├── table/
 │       └── tabs/
 ├── composables/                # 組合式函式
@@ -222,7 +225,9 @@ proxy: {
 
 ### 錯誤處理
 
-- API 失敗時自動 fallback 至 Mock 資料，確保 UI 不空白
+- API 失敗時 `index` 為 `null`，UI 顯示 `—` 佔位符，不顯示錯誤數值
+- Loading 狀態使用 shadcn Skeleton 元件，依文字缺口排列骨架動畫
+- 更新中（有舊資料 + loading）右下角顯示旋轉圖標，不中斷閱讀
 - Dashboard 顯示錯誤提示條 + 重試按鈕
 - `useMarketIndex` composable 提供 `loading` / `error` / `refresh` 狀態
 
@@ -233,7 +238,7 @@ proxy: {
 | 功能 | 狀態 | 說明 |
 | --- | --- | --- |
 | Dashboard（加權指數 + 週報 + 記事） | ✅ 已上線 | 即時 API + fallback |
-| 選股週報詳細頁 | ✅ 已上線 | 9 欄選股標的表格 |
+| 選股週報詳細頁 | ✅ 已上線 | 9 欄選股標的表格（桌面表格 / 行動卡片自適應） |
 | 個人設定 | ✅ 已上線 | 帳戶安全 / 推播 / 顯示偏好 |
 | LINE LIFF 登入 | ✅ 已上線 | Web + LINE 內建瀏覽器 |
 | 股市資產（Portfolio） | 🚧 開發中 | ComingSoon 遮罩 |
@@ -276,3 +281,4 @@ proxy: {
 | `4.0.2` | 2026-04-26 | 台股指數 API 串接（證交所 TAIEX + 櫃買 TWO）、Axios 封裝、Vite Proxy、Loading/Error 狀態 |
 | `4.0.3` | 2026-04-26 | 移除櫃買指數（CORS 無解），修正 FMTQIK 欄位對應（成交金額=成交量），單一加權指數卡片 |
 | `4.0.4` | 2026-04-26 | 環境變數區分正式/開發 API proxy、Netlify `_redirects` 設定、Portfolio/Records 加入 ComingSoon 遮罩 |
+| `4.0.5` | 2026-04-26 | Skeleton 載入狀態、API 失敗顯示 `—`、選股標的類型三色 Badge、SelectionTable 行動版卡片自適應、DropdownMenu 元件 |

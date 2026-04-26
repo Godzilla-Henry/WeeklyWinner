@@ -82,17 +82,7 @@ const notes: InvestNote[] = [
         </button>
       </div>
 
-      <div v-if="loading && !index.updatedAt" class="h-44 animate-pulse rounded-liquid bg-muted" />
-
-      <MarketIndexCard
-        v-else
-        :name="index.name"
-        :value="index.value"
-        :change="index.change"
-        :change-percent="index.changePercent"
-        :volume="index.volume"
-        :updated-at="index.updatedAt"
-      />
+      <MarketIndexCard :data="index" :loading="loading" />
     </section>
 
     <!-- Tab 區域 -->

@@ -10,14 +10,12 @@ interface Props {
 
 const props = defineProps<Props>();
 
-/** 類型對應 Badge 變體 */
 function typeVariant(type: StockType): 'gain' | 'brand' | 'secondary' {
   if (type === '技術面強勢') return 'gain';
   if (type === '技術面轉強') return 'brand';
   return 'secondary';
 }
 
-/** 乖離率顏色 */
 function biasClass(value: number): string {
   if (value > 0) return 'text-gain';
   if (value < 0) return 'text-loss';
@@ -26,7 +24,8 @@ function biasClass(value: number): string {
 </script>
 
 <template>
-  <Card>
+  <!-- 桌面版：表格 -->
+  <Card class="hidden md:block">
     <CardContent class="px-4 py-6">
       <div class="overflow-x-auto rounded-xl">
         <Table>
@@ -73,4 +72,53 @@ function biasClass(value: number): string {
       </div>
     </CardContent>
   </Card>
+
+  <!-- 行動版：卡片列表 -->
+  <div class="flex flex-col gap-3 md:hidden">
+    <Card v-for="s in props.selections" :key="s.symbol">
+      <CardContent class="flex flex-col gap-3 p-5">
+        <!-- 標題列 -->
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <p class="font-bold text-foreground">{{ s.name }}</p>
+              <p class="text-xs text-brand/95">{{ s.symbol }}</p>
+            </div>
+            <p class="text-xs text-muted-foreground">{{ s.industry }}</p>
+          </div>
+          <Badge :variant="typeVariant(s.type)">{{ s.type }}</Badge>
+        </div>
+
+        <!-- 價格區 -->
+        <div class="grid grid-cols-3 gap-2 rounded-xl bg-muted/50 p-3">
+          <div class="text-center">
+            <p class="text-[10px] text-muted-foreground">收盤價</p>
+            <p class="font-mono text-sm font-semibold tabular-nums text-foreground">{{ s.closePrice.toLocaleString() }}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-[10px] text-muted-foreground">20MA</p>
+            <p class="font-mono text-sm tabular-nums text-muted-foreground">{{ s.ma20.toLocaleString() }}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-[10px] text-muted-foreground">月線乖離</p>
+            <p class="font-mono text-sm font-semibold tabular-nums" :class="biasClass(s.monthlyBias)">
+              {{ s.monthlyBias >= 0 ? '+' : '' }}{{ s.monthlyBias.toFixed(1) }}%
+            </p>
+          </div>
+        </div>
+
+        <!-- 分析 + 目標價 -->
+        <div class="flex items-end justify-between">
+          <div class="flex flex-col gap-1 text-xs text-muted-foreground">
+            <span v-if="s.fundamental !== '- -'">基本面：{{ s.fundamental }}</span>
+            <span v-if="s.technical !== '- -'">技術面：{{ s.technical }}</span>
+          </div>
+          <div v-if="s.targetPrice > 0" class="w-20 text-center">
+            <p class="text-[10px] text-muted-foreground">目標價</p>
+            <p class="font-mono text-base font-bold tabular-nums text-brand">{{ s.targetPrice.toLocaleString() }}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
 </template>

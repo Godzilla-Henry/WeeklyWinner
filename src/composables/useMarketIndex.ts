@@ -1,31 +1,22 @@
 /**
  * 加權指數 Composable
  * - 呼叫證交所 API 取得 TAIEX
- * - 失敗時 fallback 至 Mock
+ * - 失敗時 index 為 null，由 UI 層顯示佔位符
  */
 
 import { ref, onMounted } from 'vue';
 import type { MarketIndexData } from '@/types/module/market';
 import { fetchTaiex } from '@/api/modules/stock';
 
-const FALLBACK: MarketIndexData = {
-  name: '加權指數',
-  value: 22856.72,
-  change: 156.38,
-  changePercent: 0.69,
-  volume: 3842,
-  updatedAt: '—',
-};
-
 interface UseMarketIndexReturn {
-  index: ReturnType<typeof ref<MarketIndexData>>;
+  index: ReturnType<typeof ref<MarketIndexData | null>>;
   loading: ReturnType<typeof ref<boolean>>;
   error: ReturnType<typeof ref<string | null>>;
   refresh: () => Promise<void>;
 }
 
 export function useMarketIndex(): UseMarketIndexReturn {
-  const index = ref<MarketIndexData>(FALLBACK);
+  const index = ref<MarketIndexData | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
@@ -38,7 +29,7 @@ export function useMarketIndex(): UseMarketIndexReturn {
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '未知錯誤';
       error.value = `指數載入失敗：${message}`;
-      index.value = FALLBACK;
+      index.value = null;
     } finally {
       loading.value = false;
     }
