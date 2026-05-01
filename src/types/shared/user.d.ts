@@ -1,23 +1,7 @@
-/** 使用者角色 */
+/**
+ * 使用者相關全域型別
+ * 後端 Profile 型別定義於 src/types/api.ts
+ */
+
+/** 使用者角色（保留供未來擴充） */
 type UserRole = 'admin' | 'editor' | 'viewer';
-
-/** 使用者資料 */
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  avatar?: string;
-}
-
-/** 登入請求 */
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-/** 登入回應 */
-interface LoginResult {
-  token: string;
-  user: UserProfile;
-}

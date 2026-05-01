@@ -1,55 +1,40 @@
 import { defineStore } from 'pinia';
-import { loginApi, logoutApi, fetchCurrentUserApi } from '@/api/auth';
+import type { Profile } from '@/types/api';
 
 /** 認證狀態 */
 interface AuthState {
-  token: string | null;
-  user: UserProfile | null;
+  profile: Profile | null;
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
-    token: null,
-    user: null,
+    profile: null,
   }),
 
   getters: {
-    /** 是否已登入 */
-    isAuthenticated: (state): boolean => state.token !== null,
+    /** 是否已同步 Profile */
+    hasSynced: (state): boolean => state.profile !== null,
 
-    /** 使用者角色 */
-    userRole: (state): UserRole | null => state.user?.role ?? null,
+    /** 使用者名稱 */
+    userName: (state): string => state.profile?.name ?? '',
+
+    /** 使用者頭像 */
+    userAvatar: (state): string | null => state.profile?.avatar ?? null,
   },
 
   actions: {
-    /** 登入 */
-    async login(payload: LoginPayload): Promise<void> {
-      const res = await loginApi(payload);
-      this.token = res.data.token;
-      this.user = res.data.user;
-      localStorage.setItem('auth_token', res.data.token);
+    /** 設定 Profile（登入同步後呼叫） */
+    setProfile(profile: Profile): void {
+      this.profile = profile;
     },
 
-    /** 取得當前使用者 */
-    async fetchUser(): Promise<void> {
-      const res = await fetchCurrentUserApi();
-      this.user = res.data;
-    },
-
-    /** 登出 */
-    async logout(): Promise<void> {
-      await logoutApi();
-      this.token = null;
-      this.user = null;
-      localStorage.removeItem('auth_token');
+    /** 清除 Profile */
+    clearProfile(): void {
+      this.profile = null;
     },
   },
 
-  /**
-   * 持久化設定（pinia-plugin-persistedstate）
-   * 僅持久化 token，使用者資料每次重新取得
-   */
   persist: {
-    pick: ['token'],
+    pick: ['profile'],
   },
 });

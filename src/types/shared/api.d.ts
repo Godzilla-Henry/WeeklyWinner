@@ -1,14 +1,10 @@
-/** API 通用回應結構 */
-interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
+/**
+ * API 通用型別
+ * 後端 API 回應型別定義於 src/types/api.ts
+ */
 
-/** 分頁資料結構 */
-interface PaginatedData<T> {
-  list: T[];
-  total: number;
+/** 分頁參數 */
+interface PaginationParams {
   page: number;
-  pageSize: number;
+  limit: number;
 }

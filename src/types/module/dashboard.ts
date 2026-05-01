@@ -1,11 +1,5 @@
-/** 選股週報（列表用） */
-export interface WeeklyReport {
-  id: string;
-  title: string;
-  date: string;
-  tags: string[];
-  summary: string;
-}
+/** 週報摘要（列表用） — 重新匯出 API 型別 */
+export type { WeeklyReport } from '@/types/api';
 
 /** 記事類型 */
 export type NoteCategory = 'direction' | 'indicator' | 'event';

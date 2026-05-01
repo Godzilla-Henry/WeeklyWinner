@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import MarketIndexCard from './components/MarketIndexCard.vue';
 import ReportCard from './components/ReportCard.vue';
 import NoteCard from './components/NoteCard.vue';
-import { useMarketIndex } from '@/composables/useMarketIndex';
+import { useMarketIndex } from '@/composables/module/useMarketIndex';
 import type { WeeklyReport, InvestNote } from './types';
 
 const { index, loading, error, refresh } = useMarketIndex();
@@ -71,7 +71,7 @@ const notes: InvestNote[] = [
     <!-- 加權指數 -->
     <section class="flex flex-col gap-3">
       <div v-if="error" class="flex items-center justify-between rounded-xl bg-brand-muted px-4 py-2">
-        <p class="text-xs text-muted-foreground">{{ error }}</p>
+        <p class="text-xs text-muted-foreground">指數載入失敗：{{ error.message }}</p>
         <button
           class="flex items-center gap-1 text-xs font-medium text-brand transition hover:opacity-80"
           :disabled="loading"
@@ -82,7 +82,7 @@ const notes: InvestNote[] = [
         </button>
       </div>
 
-      <MarketIndexCard :data="index" :loading="loading" />
+      <MarketIndexCard :data="index ?? null" :loading="loading" />
     </section>
 
     <!-- Tab 區域 -->

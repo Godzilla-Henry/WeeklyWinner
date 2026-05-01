@@ -21,6 +21,9 @@ src/
 │   └── layout/                 #   佈局元件（AppNav, Header…）
 │
 ├── composables/                # 組合式函式 — 以 `use` 前綴命名
+│   ├── shared/
+│   │   └── xxx.ts            # 共用型API
+│   └── moudule/                # 功能頁面需要使用的API函式
 ├── constants/                  # 全域常數（UPPER_SNAKE_CASE）
 ├── lib/                        # 工具庫（shadcn cn() 等）
 │   └── utils.ts
