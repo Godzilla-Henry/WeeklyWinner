@@ -1,7 +1,7 @@
 # Weekly Winner
 
-> **版本：** `5.0.0`
-> **最後更新：** 2026-05-01
+> **版本：** `5.3.0`
+> **最後更新：** 2026-05-03
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
 ---
@@ -19,7 +19,8 @@
 | Styling | Tailwind CSS 4（`@tailwindcss/vite`）+ shadcn-vue（CSS Variables） |
 | UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar, Skeleton, DropdownMenu） |
 | Icons | Lucide Vue Next |
-| HTTP | Native `fetch` 封裝（`src/api/http.ts` 認證用 / `src/api/publicHttp.ts` 公開 API 用） |
+| HTTP | Native `fetch` 封裝（`src/api/http.ts`，認證自動帶入 idToken） |
+| Backend | [Render](https://weeklywinnerbackend.onrender.com)（Node.js） |
 | Auth | LINE LIFF SDK `@line/liff` |
 | Linting | ESLint 9（flat config）+ `typescript-eslint` + `eslint-plugin-vue` |
 | Formatting | Prettier 3 + `prettier-plugin-tailwindcss` |
@@ -158,10 +159,33 @@ composables/module/useReportQuery.ts
   ↓ 呼叫 API 函式
 api/modules/report.ts
   ↓ 經由 HTTP 封裝
-api/http.ts（認證）/ api/publicHttp.ts（公開）
+api/http.ts（publicHttp 公開 / http 認證）
   ↓
-後端 / 外部 API
+後端 API（https://weeklywinnerbackend.onrender.com）
 ```
+
+### 後端 API Base URL
+
+| 環境 | `VITE_API_BASE_URL` | 說明 |
+| --- | --- | --- |
+| 開發 | `/api` | Vite dev server proxy → `https://weeklywinnerbackend.onrender.com/api` |
+| 正式 | `https://weeklywinnerbackend.onrender.com/api` | 直連後端 |
+
+### API 認證分類
+
+| 類型 | 說明 | 使用方式 |
+| --- | --- | --- |
+| 公開 API | 不需登入（週報列表、週報詳情） | `publicHttp.get()` |
+| 認證 API | 需 LINE idToken（登入、未讀、標記已讀） | `http.get()` / `http.post()`，自動帶入 Bearer token |
+
+### 錯誤處理
+
+| HTTP 狀態 | 處理方式 |
+| --- | --- |
+| 401 | Token 過期，自動觸發 `liff.login()` 重新登入 |
+| 400 | 參數錯誤，顯示後端回傳的 `error` 訊息 |
+| 500 | 伺服器錯誤，顯示「伺服器錯誤，請稍後再試」 |
+| 網路錯誤 | 顯示「網路連線異常，請檢查網路狀態」 |
 
 ### API 模組
 
@@ -211,6 +235,18 @@ api/http.ts（認證）/ api/publicHttp.ts（公開）
 | 全域共用 | `types/shared/*.d.ts` | 跨頁面共用的 interface，自動全域可見 |
 | 功能模組 | `types/module/*.ts` | 特定功能的型別，需 `export` / `import` |
 
+### App 啟動流程
+
+```
+liff.init()
+  → liff.isLoggedIn() ?
+    → Yes: fetchProfile() + login()（後端 upsert 用戶）
+           → 儲存 profile 到 AuthStore
+           → useUnreadCounts() 自動開始 fetch（每 60 秒刷新）
+    → No:  顯示 LINE 登入按鈕
+  → app.mount()
+```
+
 ---
 
 ## LINE LIFF 整合
@@ -218,7 +254,7 @@ api/http.ts（認證）/ api/publicHttp.ts（公開）
 - LIFF ID：`2009896414-Y1G1LW7f`
 - 封裝位置：`src/composables/useLiff.ts`（單例模式）
 - 初始化時機：`src/plugins/liff.ts`，App mount 前完成
-- 認證方式：`liff.getIDToken()` → `Authorization: Bearer <idToken>`
+- 認證方式：`liff.getAccessToken()` → `Authorization: Bearer <accessToken>`
 - 功能：init / login / logout / fetchProfile / getAccessToken / closeWindow
 - TheHeader 已整合 LIFF 使用者頭像，未登入時顯示 Fallback
 
@@ -240,14 +276,26 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 
 ### 環境變數
 
-透過 `VITE_TWSE_BASE_URL` 控制 API base path：
-
-| 檔案 | 值 | 說明 |
-| --- | --- | --- |
-| `.env.development` | `/twse` | Vite dev server proxy 攔截轉發 |
-| `.env.production` | `/twse` | Netlify `_redirects` proxy 轉發 |
+| 變數 | 開發環境 | 正式環境 | 說明 |
+| --- | --- | --- | --- |
+| `VITE_API_BASE_URL` | `/api` | `https://weeklywinnerbackend.onrender.com/api` | 後端 API base path |
+| `VITE_TWSE_BASE_URL` | `/twse` | `/twse` | 證交所 API base path |
 
 ### Proxy 機制
+
+#### 後端 API（開發環境）
+
+開發環境透過 Vite proxy 轉發 `/api` 請求，避免 CORS 問題：
+
+```
+瀏覽器 → localhost:5173/api/reports?page=1&limit=20
+       → Vite proxy 轉發（保留 /api 前綴）
+       → https://weeklywinnerbackend.onrender.com/api/reports?page=1&limit=20
+```
+
+正式環境直接使用完整 URL，不需 proxy。
+
+#### 證交所 API
 
 證交所 API 有 CORS 限制，前端無法直連，需透過 proxy 轉發：
 
@@ -286,7 +334,7 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 ## 設計系統
 
 - 品牌色：`#E8920A`（Logo 橘），定義為 `--brand`
-- 漲跌色：`--gain`（Emerald-600）/ `--loss`（Rose-600）
+- 漲跌色：`--gain`（Rose-600 紅漲）/ `--loss`（Emerald-600 綠跌）— 台股慣例
 - 卡片風格：Liquid Design — 白底 + 橘色光斑暈染 + 柔和陰影
 - 圓角：`--radius-liquid`（2.5rem）/ `--radius-pill`（9999px）
 - 導航列：懸浮膠囊式，白色半透明 + backdrop-blur
@@ -320,3 +368,6 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `4.0.4` | 2026-04-26 | 環境變數區分正式/開發 API proxy、Netlify `_redirects` 設定、Portfolio/Records 加入 ComingSoon 遮罩 |
 | `4.0.5` | 2026-04-26 | Skeleton 載入狀態、API 失敗顯示 `—`、選股標的類型三色 Badge、SelectionTable 行動版卡片自適應、DropdownMenu 元件 |
 | `5.0.0` | 2026-05-01 | **API 架構重構**：移除 Axios 改用 native fetch、TanStack Vue Query 整合、API 模組化（auth/report/unread/stock）、composables 分層（shared/module）、snake_case→camelCase 自動轉換、FMTQIK 月份 fallback 修正 |
+| `5.1.0` | 2026-05-01 | 後端 API 串接（Render）、Vite proxy 設定、週報列表/詳情改用真實 API、紅漲綠跌色系修正、週報公開 API 不需登入 |
+| `5.2.0` | 2026-05-01 | HTTP client 自動帶入 idToken、API 函式移除 token 參數、401 自動重新登入、App 啟動登入同步、未讀 Badge 串接真實 API（60 秒刷新）、週報詳情自動標記已讀 |
+| `5.3.0` | 2026-05-03 | **Badge 已讀系統完整串接**：改用 Access Token 認證（取代 ID Token）、新增 read-status API 串接、週報卡片未讀紅點 + NEW 標籤、Bell 通知下拉列表（顯示未讀/已讀狀態）、防迴圈重新登入機制、紅漲綠跌色系修正 |

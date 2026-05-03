@@ -11,11 +11,17 @@ export const queryKeys = {
     detail: (id: string) => ['reports', 'detail', id] as const,
   },
 
-  /** 未讀數量 */
+  /** 未讀 / 已讀狀態 */
   unread: {
     all: ['unread'] as const,
     counts: () => ['unread', 'counts'] as const,
     byType: (contentType: string) => ['unread', contentType] as const,
+  },
+
+  /** 已讀狀態（列表頁紅點） */
+  readStatus: {
+    all: ['readStatus'] as const,
+    byType: (contentType: string) => ['readStatus', contentType] as const,
   },
 
   /** 認證 */

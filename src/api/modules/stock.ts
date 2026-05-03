@@ -8,7 +8,6 @@
  * 會自動 fallback 查上個月資料。
  */
 
-import { publicGet } from '@/api/publicHttp';
 import type { MarketIndexData } from '@/types/module/market';
 
 /** 證交所 API base — 開發走 proxy，正式直連 */
@@ -39,9 +38,11 @@ interface TwseFmtqikResponse {
 
 /** 嘗試取得指定月份的 FMTQIK 資料 */
 async function fetchFmtqik(dateStr: string): Promise<TwseFmtqikResponse> {
-  return publicGet<TwseFmtqikResponse>(
+  const res = await fetch(
     `${TWSE_BASE}/exchangeReport/FMTQIK?response=json&date=${dateStr}`,
   );
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as TwseFmtqikResponse;
 }
 
 /**

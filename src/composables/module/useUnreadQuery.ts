@@ -1,23 +1,27 @@
 /**
- * 未讀數量相關 TanStack Query Composables
+ * 未讀 / 已讀狀態 TanStack Query Composables
  */
 
 import { computed, type Ref } from 'vue';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { getUnreadCounts, getUnreadCount, markAsRead, queryKeys } from '@/api';
-import { getLiffIdToken } from '@/composables/shared/useLiffToken';
-import type { UnreadCountsResponse, UnreadCountResponse, MarkAsReadResponse } from '@/types/api';
+import { getUnreadCounts, getUnreadCount, getReadStatus, markAsRead, queryKeys } from '@/api';
+import { useIsLiffLoggedIn } from '@/composables/shared/useLiffToken';
+import type {
+  UnreadCountsResponse,
+  UnreadCountResponse,
+  ReadStatusResponse,
+  MarkAsReadResponse,
+} from '@/types/api';
 
-/** 所有類型未讀數量 */
+/** 所有類型未讀數量（每 60 秒自動刷新） */
 export function useUnreadCountsQuery(): ReturnType<typeof useQuery<UnreadCountsResponse>> {
+  const isLoggedIn = useIsLiffLoggedIn();
+
   return useQuery<UnreadCountsResponse>({
     queryKey: queryKeys.unread.counts(),
-    queryFn: () => {
-      const token = getLiffIdToken();
-      if (!token) throw new Error('未登入');
-      return getUnreadCounts(token);
-    },
-    enabled: computed(() => getLiffIdToken() !== null),
+    queryFn: () => getUnreadCounts(),
+    enabled: isLoggedIn,
+    refetchInterval: 60_000,
   });
 }
 
@@ -25,14 +29,25 @@ export function useUnreadCountsQuery(): ReturnType<typeof useQuery<UnreadCountsR
 export function useUnreadCountQuery(
   contentType: Ref<string>,
 ): ReturnType<typeof useQuery<UnreadCountResponse>> {
+  const isLoggedIn = useIsLiffLoggedIn();
+
   return useQuery<UnreadCountResponse>({
     queryKey: computed(() => queryKeys.unread.byType(contentType.value)),
-    queryFn: () => {
-      const token = getLiffIdToken();
-      if (!token) throw new Error('未登入');
-      return getUnreadCount(token, contentType.value);
-    },
-    enabled: computed(() => !!contentType.value && getLiffIdToken() !== null),
+    queryFn: () => getUnreadCount(contentType.value),
+    enabled: computed(() => !!contentType.value && isLoggedIn.value),
+  });
+}
+
+/** 批次已讀狀態（列表頁紅點用） */
+export function useReadStatusQuery(
+  contentType: string,
+): ReturnType<typeof useQuery<ReadStatusResponse>> {
+  const isLoggedIn = useIsLiffLoggedIn();
+
+  return useQuery<ReadStatusResponse>({
+    queryKey: queryKeys.readStatus.byType(contentType),
+    queryFn: () => getReadStatus(contentType),
+    enabled: isLoggedIn,
   });
 }
 
@@ -43,14 +58,14 @@ export function useMarkAsReadMutation(): ReturnType<
   const queryClient = useQueryClient();
 
   return useMutation<MarkAsReadResponse, Error, { contentType: string; contentId: string }>({
-    mutationFn: ({ contentType, contentId }) => {
-      const token = getLiffIdToken();
-      if (!token) throw new Error('未登入');
-      return markAsRead(token, contentType, contentId);
-    },
-    onSuccess: () => {
-      /** 標記已讀後，重新取得未讀數量 */
+    mutationFn: ({ contentType, contentId }) => markAsRead(contentType, contentId),
+    onSuccess: (_data, variables) => {
+      /* 更新全域 Badge 數字 */
       void queryClient.invalidateQueries({ queryKey: queryKeys.unread.all });
+      /* 更新列表頁紅點狀態 */
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.readStatus.byType(variables.contentType),
+      });
     },
   });
 }

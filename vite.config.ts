@@ -14,6 +14,10 @@ export default defineConfig({
     port: 5173,
     open: true,
     proxy: {
+      '/api': {
+        target: 'https://weeklywinnerbackend.onrender.com',
+        changeOrigin: true,
+      },
       '/twse': {
         target: 'https://www.twse.com.tw',
         changeOrigin: true,

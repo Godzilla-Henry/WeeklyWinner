@@ -1,18 +1,13 @@
 /**
- * LIFF ID Token 取得
- * 提供給 API 層使用的 LINE idToken
+ * LIFF 登入狀態響應式封裝
+ * 提供給 TanStack Query 的 enabled 使用
  */
 
-import liff from '@line/liff';
+import { computed, type ComputedRef } from 'vue';
+import { useLiff } from '@/composables/useLiff';
 
-/**
- * 取得 LINE ID Token
- * @returns idToken 字串，未登入時回傳 null
- */
-export function getLiffIdToken(): string | null {
-  try {
-    return liff.isLoggedIn() ? liff.getIDToken() : null;
-  } catch {
-    return null;
-  }
+/** 響應式 — 是否已登入（供 Query enabled 使用） */
+export function useIsLiffLoggedIn(): ComputedRef<boolean> {
+  const { loggedIn } = useLiff();
+  return computed(() => loggedIn.value);
 }

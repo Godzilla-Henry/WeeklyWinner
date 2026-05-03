@@ -111,3 +111,10 @@ export interface MarkAsReadResponse {
   ok: boolean;
   readLog: ReadLog;
 }
+
+/** 批次已讀狀態回應（列表頁紅點用） */
+export interface ReadStatusResponse {
+  ok: boolean;
+  contentType: string;
+  readIds: string[];
+}

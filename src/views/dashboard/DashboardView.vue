@@ -1,32 +1,34 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { RefreshCw } from 'lucide-vue-next';
 import DefaultLayout from '@/components/layout/DefaultLayout.vue';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import MarketIndexCard from './components/MarketIndexCard.vue';
 import ReportCard from './components/ReportCard.vue';
 import NoteCard from './components/NoteCard.vue';
 import { useMarketIndex } from '@/composables/module/useMarketIndex';
-import type { WeeklyReport, InvestNote } from './types';
+import { useReportsQuery } from '@/composables/module/useReportQuery';
+import { useReadStatusQuery } from '@/composables/module/useUnreadQuery';
+import type { InvestNote } from './types';
 
+/* ── 加權指數 ── */
 const { index, loading, error, refresh } = useMarketIndex();
 
-const reports: WeeklyReport[] = [
-  {
-    id: '0426',
-    title: '04/26 選股週報',
-    date: '2026-04-26',
-    tags: ['均華', '中探針',],
-    summary: '台積電技術論壇揭露A16至A12的埃米世代最新製程,相關設備廠務、先進測試、CPO等都是最大受惠,惟因短線漲多,漲幅乖離過大必然修正,看好拉回守穩再上。',
-  },
-  {
-    id: '0419',               
-    title: '04/19 選股週報',
-    date: '2026-04-19',
-    tags: ['營邦', '精測', '勤誠', '順達'],
-    summary: 'AI 伺服器需求持續攀升，輝達新一代晶片帶動台系 ODM 廠訂單能見度延伸至 Q3，科技股維持偏多格局。',
-  },
-];
+/* ── 週報列表（API） ── */
+const page = ref(1);
+const {
+  data: reportsData,
+  isLoading: reportsLoading,
+  error: reportsError,
+} = useReportsQuery(page);
 
+/* ── 已讀狀態（紅點判斷） ── */
+const { data: readStatusData } = useReadStatusQuery('weekly_report');
+const readIds = computed((): string[] => readStatusData.value?.readIds ?? []);
+
+/* ── 投資記事（暫用 Mock） ── */
 const notes: InvestNote[] = [
   {
     id: 'n1',
@@ -93,7 +95,47 @@ const notes: InvestNote[] = [
       </TabsList>
 
       <TabsContent value="reports" class="flex flex-col gap-3">
-        <ReportCard v-for="report in reports" :key="report.id" :report="report" />
+        <!-- 載入中骨架 -->
+        <template v-if="reportsLoading">
+          <Card v-for="i in 2" :key="i">
+            <CardHeader class="pb-2">
+              <div class="flex items-center gap-3">
+                <Skeleton class="h-10 w-10 rounded-2xl" />
+                <div class="flex flex-col gap-1.5">
+                  <Skeleton class="h-4 w-32" />
+                  <Skeleton class="h-3 w-20" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Skeleton class="mb-3 h-12 w-full" />
+              <div class="flex gap-1.5">
+                <Skeleton class="h-5 w-12 rounded-full" />
+                <Skeleton class="h-5 w-14 rounded-full" />
+              </div>
+            </CardContent>
+          </Card>
+        </template>
+
+        <!-- 錯誤狀態 -->
+        <div v-else-if="reportsError" class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6">
+          <p class="text-sm text-muted-foreground">週報載入失敗：{{ reportsError.message }}</p>
+        </div>
+
+        <!-- 週報列表 -->
+        <template v-else-if="reportsData?.reports?.length">
+          <ReportCard
+            v-for="report in reportsData.reports"
+            :key="report.id"
+            :report="report"
+            :is-unread="!readIds.includes(report.id)"
+          />
+        </template>
+
+        <!-- 空狀態 -->
+        <div v-else class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8">
+          <p class="text-sm text-muted-foreground">尚無週報資料</p>
+        </div>
       </TabsContent>
 
       <TabsContent value="notes" class="flex flex-col gap-3">

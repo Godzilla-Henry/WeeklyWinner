@@ -86,7 +86,7 @@ function biasClass(value: number): string {
             </div>
             <p class="text-xs text-muted-foreground">{{ s.industry }}</p>
           </div>
-          <Badge :variant="typeVariant(s.type)">{{ s.type }}</Badge>
+          <Badge :variant="typeVariant(s.type)" class="min-w-fit">{{ s.type }}</Badge>
         </div>
 
         <!-- 價格區 -->
@@ -110,12 +110,12 @@ function biasClass(value: number): string {
         <!-- 分析 + 目標價 -->
         <div class="flex items-end justify-between">
           <div class="flex flex-col gap-1 text-xs text-muted-foreground">
-            <span v-if="s.fundamental !== '- -'">基本面：{{ s.fundamental }}</span>
-            <span v-if="s.technical !== '- -'">技術面：{{ s.technical }}</span>
+            <span v-if="s.fundamental !== ''">基本面：{{ s.fundamental }}</span>
+            <span v-if="s.technical !== ''">技術面：{{ s.technical }}</span>
           </div>
-          <div v-if="s.targetPrice > 0" class="w-20 text-center">
+          <div class="w-20 text-center">
             <p class="text-[10px] text-muted-foreground">目標價</p>
-            <p class="font-mono text-base font-bold tabular-nums text-brand">{{ s.targetPrice.toLocaleString() }}</p>
+            <p class="font-mono text-base font-bold tabular-nums text-brand">{{ s.targetPrice > 0? s.targetPrice.toLocaleString(): '- -' }}</p>
           </div>
         </div>
       </CardContent>

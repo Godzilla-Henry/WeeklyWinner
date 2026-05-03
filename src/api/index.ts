@@ -4,6 +4,6 @@
 
 export { login } from './modules/auth';
 export { getReports, getReportDetail } from './modules/report';
-export { getUnreadCounts, getUnreadCount, markAsRead } from './modules/unread';
+export { getUnreadCounts, getUnreadCount, getReadStatus, markAsRead } from './modules/unread';
 export { fetchTaiex } from './modules/stock';
 export { queryKeys } from './queryKeys';
