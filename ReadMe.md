@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `5.3.1`
+> **版本：** `5.4.0`
 > **最後更新：** 2026-05-03
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -372,3 +372,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `5.2.0` | 2026-05-01 | HTTP client 自動帶入 idToken、API 函式移除 token 參數、401 自動重新登入、App 啟動登入同步、未讀 Badge 串接真實 API（60 秒刷新）、週報詳情自動標記已讀 |
 | `5.3.0` | 2026-05-03 | **Badge 已讀系統完整串接**：改用 Access Token 認證（取代 ID Token）、新增 read-status API 串接、週報卡片未讀紅點 + NEW 標籤、Bell 通知下拉列表（顯示未讀/已讀狀態）、防迴圈重新登入機制、紅漲綠跌色系修正 |
 | `5.3.1` | 2026-05-03 | 修正正式環境 API 404：`.gitignore` 允許 `.env.production` 被 commit，確保 Netlify build 時 `VITE_API_BASE_URL` 正確注入 |
+| `5.4.0` | 2026-05-03 | **Splash Screen 載入體驗優化**：純 CSS 品牌動畫（不依賴 Vue/JS）、三階段提示文字（準備中 → 伺服器喚醒 → 即將完成）、Vue mount 後平滑淡出 |
