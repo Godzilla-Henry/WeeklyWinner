@@ -77,10 +77,10 @@ function goBack(): void {
         <div class="mt-3">
           <h2 class="text-lg font-bold text-foreground">{{ note.title }}</h2>
           <div class="mt-1 flex items-center gap-2">
+            <p class="text-sm text-muted-foreground">{{ note.publishDate }}</p>
             <Badge :class="categoryBadgeClass[note.category]">
               {{ noteCategoryLabel[note.category] }}
             </Badge>
-            <p class="text-sm text-muted-foreground">{{ note.publishDate }}</p>
           </div>
         </div>
       </template>

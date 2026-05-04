@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `5.7.0`
+> **版本：** `5.7.1`
 > **最後更新：** 2026-05-03
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -377,3 +377,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `5.5.0` | 2026-05-04 | **投資記事改版**：NoteCard 支援圖文並排 / 純文字雙版型、新增 InvestNoteView 詳細頁（圖文排版 + 段落解析）、category 調整為 direction / note / event、新增 imageUrl 欄位 |
 | `5.6.0` | 2026-05-04 | **Dashboard UX 升級**：Tab 狀態持久化（URL query ?tab=）、NoteCard 極簡條列式重設計（Icon + 分割線）、InvestNoteView 詳情頁翻新（Hero 封面 + Blockquote 引言 + 相關記事導覽） |
 | `5.7.0` | 2026-05-04 | **投資記事 API 串接**：新增 invest-notes API 模組、useInvestNoteQuery composable、Dashboard 記事列表改用真實 API（含 loading/error/empty）、InvestNoteView 改用 API + 自動標記已讀（invest_note）、Tab Badge 顯示各類型未讀數、通知下拉合併週報 + 記事（未讀優先排序）、移除所有 mock 資料 |
+| `5.7.1` | 2026-05-04 | UI 微調：NoteCard 排版修正（標題獨立行 + 箭頭固定右側）、記事類別配色統一（藍/綠/黃）、AppNav 觸控區域放大（48→56px）提升行動端操作體驗 |
