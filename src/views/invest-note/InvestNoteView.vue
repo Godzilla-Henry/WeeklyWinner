@@ -120,7 +120,7 @@ function goBack(): void {
 
           <!-- 封面圖 -->
           <div v-if="note.imageUrl" class="overflow-hidden rounded-xl">
-            <img :src="note.imageUrl" :alt="note.title" class="h-48 w-full object-cover sm:h-64" />
+            <img :src="note.imageUrl" :alt="note.title" class="w-full object-cover" />
           </div>
 
           <p v-for="(paragraph, idx) in paragraphs.slice(1)" :key="idx" class="text-sm leading-7 text-muted-foreground">
