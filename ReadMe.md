@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `5.4.0`
+> **版本：** `5.6.0`
 > **最後更新：** 2026-05-03
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -351,6 +351,7 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `/records` | records | 收益統計（週期卡片 + 操作日誌 Tab） |
 | `/settings` | settings | 個人設定（帳戶安全 / 推播 / 顯示偏好） |
 | `/weekly-report/:id` | weekly-report | 週報詳細頁（9 欄選股標的表格） |
+| `/invest-note/:id` | invest-note | 投資記事詳細頁（圖文 / 純文字） |
 
 ---
 
@@ -373,3 +374,5 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `5.3.0` | 2026-05-03 | **Badge 已讀系統完整串接**：改用 Access Token 認證（取代 ID Token）、新增 read-status API 串接、週報卡片未讀紅點 + NEW 標籤、Bell 通知下拉列表（顯示未讀/已讀狀態）、防迴圈重新登入機制、紅漲綠跌色系修正 |
 | `5.3.1` | 2026-05-03 | 修正正式環境 API 404：`.gitignore` 允許 `.env.production` 被 commit，確保 Netlify build 時 `VITE_API_BASE_URL` 正確注入 |
 | `5.4.0` | 2026-05-03 | **Splash Screen 載入體驗優化**：純 CSS 品牌動畫（不依賴 Vue/JS）、三階段提示文字（準備中 → 伺服器喚醒 → 即將完成）、Vue mount 後平滑淡出 |
+| `5.5.0` | 2026-05-04 | **投資記事改版**：NoteCard 支援圖文並排 / 純文字雙版型、新增 InvestNoteView 詳細頁（圖文排版 + 段落解析）、category 調整為 direction / note / event、新增 imageUrl 欄位 |
+| `5.6.0` | 2026-05-04 | **Dashboard UX 升級**：Tab 狀態持久化（URL query ?tab=）、NoteCard 極簡條列式重設計（Icon + 分割線）、InvestNoteView 詳情頁翻新（Hero 封面 + Blockquote 引言 + 相關記事導覽） |

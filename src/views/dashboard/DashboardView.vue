@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { RefreshCw } from 'lucide-vue-next';
 import DefaultLayout from '@/components/layout/DefaultLayout.vue';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -12,6 +13,25 @@ import { useMarketIndex } from '@/composables/module/useMarketIndex';
 import { useReportsQuery } from '@/composables/module/useReportQuery';
 import { useReadStatusQuery } from '@/composables/module/useUnreadQuery';
 import type { InvestNote } from './types';
+
+const route = useRoute();
+const router = useRouter();
+
+/* ── Tab 狀態持久化（URL query ?tab=notes） ── */
+const VALID_TABS = ['reports', 'notes'] as const;
+type TabValue = (typeof VALID_TABS)[number];
+
+function getInitialTab(): TabValue {
+  const q = route.query.tab;
+  const val = typeof q === 'string' ? q : '';
+  return (VALID_TABS as readonly string[]).includes(val) ? (val as TabValue) : 'reports';
+}
+
+const activeTab = ref<TabValue>(getInitialTab());
+
+watch(activeTab, (tab) => {
+  void router.replace({ query: { ...route.query, tab: tab === 'reports' ? undefined : tab } });
+});
 
 /* ── 加權指數 ── */
 const { index, loading, error, refresh } = useMarketIndex();
@@ -39,10 +59,11 @@ const notes: InvestNote[] = [
   },
   {
     id: 'n2',
-    category: 'indicator',
+    category: 'note',
     title: 'VIX 恐慌指數回落至 14',
     content: 'CBOE VIX 指數從上週的 18.5 回落至 14.2，顯示市場恐慌情緒降溫，有利於風險性資產表現。',
     date: '2026-04-24',
+    imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
   },
   {
     id: 'n3',
@@ -53,14 +74,7 @@ const notes: InvestNote[] = [
   },
   {
     id: 'n4',
-    category: 'direction',
-    title: '航運股短線獲利了結',
-    content: '貨櫃三雄近兩週漲幅已達 12-15%，短線乖離偏大。建議分批獲利了結，等待運價數據確認後再行佈局。',
-    date: '2026-04-22',
-  },
-  {
-    id: 'n5',
-    category: 'indicator',
+    category: 'note',
     title: '外資連三日買超台股',
     content: '外資本週累計買超 285 億元，主要集中在半導體與金融權值股，為近一個月最大單週買超。',
     date: '2026-04-21',
@@ -87,8 +101,8 @@ const notes: InvestNote[] = [
       <MarketIndexCard :data="index ?? null" :loading="loading" />
     </section>
 
-    <!-- Tab 區域 -->
-    <Tabs default-value="reports">
+    <!-- Tab 區域（狀態持久化） -->
+    <Tabs :model-value="activeTab" @update:model-value="activeTab = $event as TabValue">
       <TabsList>
         <TabsTrigger value="reports">選股週報</TabsTrigger>
         <TabsTrigger value="notes">投資記事</TabsTrigger>

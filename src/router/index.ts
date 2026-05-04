@@ -32,6 +32,11 @@ const routes: RouteRecordRaw[] = [
     name: 'weekly-report',
     component: () => import('@/views/weekly-report/WeeklyReportView.vue'),
   },
+  {
+    path: '/invest-note/:id',
+    name: 'invest-note',
+    component: () => import('@/views/invest-note/InvestNoteView.vue'),
+  },
 ];
 
 const router = createRouter({
