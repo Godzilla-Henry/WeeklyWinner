@@ -3,12 +3,22 @@
  * 集中管理所有 query key，確保快取一致性
  */
 
+import type { NoteCategory } from '@/types/api';
+
 export const queryKeys = {
   /** 週報相關 */
   reports: {
     all: ['reports'] as const,
     list: (page: number, limit: number) => ['reports', 'list', { page, limit }] as const,
     detail: (id: string) => ['reports', 'detail', id] as const,
+  },
+
+  /** 投資記事 */
+  investNotes: {
+    all: ['investNotes'] as const,
+    list: (page: number, limit: number, category?: NoteCategory) =>
+      ['investNotes', 'list', { page, limit, category }] as const,
+    detail: (id: string) => ['investNotes', 'detail', id] as const,
   },
 
   /** 未讀 / 已讀狀態 */

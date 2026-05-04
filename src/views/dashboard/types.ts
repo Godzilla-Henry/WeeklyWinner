@@ -1,4 +1,4 @@
-/** Dashboard Mock 資料與 re-export */
+/** Dashboard re-export */
 
-export type { WeeklyReport, InvestNote, NoteCategory } from '@/types/module/dashboard';
+export type { WeeklyReport, NoteCategory, InvestNoteSummary, InvestNoteDetail } from '@/types/module/dashboard';
 export { noteCategoryLabel } from '@/types/module/dashboard';

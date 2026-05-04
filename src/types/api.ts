@@ -118,3 +118,37 @@ export interface ReadStatusResponse {
   contentType: string;
   readIds: string[];
 }
+
+/* ── 投資記事 ── */
+
+/** 記事類別 */
+export type NoteCategory = 'direction' | 'note' | 'event';
+
+/** 記事摘要（列表用，不含 content） */
+export interface InvestNoteSummary {
+  id: string;
+  category: NoteCategory;
+  title: string;
+  imageUrl: string | null;
+  publishDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** 記事詳情（含完整 content） */
+export interface InvestNoteDetail extends InvestNoteSummary {
+  content: string;
+}
+
+/** 記事列表回應 */
+export interface NotesResponse {
+  ok: boolean;
+  notes: InvestNoteSummary[];
+  total: number;
+}
+
+/** 記事詳情回應 */
+export interface NoteDetailResponse {
+  ok: boolean;
+  note: InvestNoteDetail;
+}

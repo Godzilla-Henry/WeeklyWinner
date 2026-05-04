@@ -11,13 +11,13 @@ import ReportCard from './components/ReportCard.vue';
 import NoteCard from './components/NoteCard.vue';
 import { useMarketIndex } from '@/composables/module/useMarketIndex';
 import { useReportsQuery } from '@/composables/module/useReportQuery';
-import { useReadStatusQuery } from '@/composables/module/useUnreadQuery';
-import type { InvestNote } from './types';
+import { useInvestNotesQuery } from '@/composables/module/useInvestNoteQuery';
+import { useReadStatusQuery, useUnreadCountsQuery } from '@/composables/module/useUnreadQuery';
 
 const route = useRoute();
 const router = useRouter();
 
-/* ── Tab 狀態持久化（URL query ?tab=notes） ── */
+/* ── Tab 狀態持久化 ── */
 const VALID_TABS = ['reports', 'notes'] as const;
 type TabValue = (typeof VALID_TABS)[number];
 
@@ -36,50 +36,28 @@ watch(activeTab, (tab) => {
 /* ── 加權指數 ── */
 const { index, loading, error, refresh } = useMarketIndex();
 
-/* ── 週報列表（API） ── */
+/* ── 未讀數量（Tab Badge） ── */
+const { data: unreadData } = useUnreadCountsQuery();
+const reportUnread = computed((): number => {
+  const counts = unreadData.value?.counts;
+  return counts ? ((counts as Record<string, number>)['weeklyReport'] ?? 0) : 0;
+});
+const noteUnread = computed((): number => {
+  const counts = unreadData.value?.counts;
+  return counts ? ((counts as Record<string, number>)['investNote'] ?? 0) : 0;
+});
+
+/* ── 週報列表 ── */
 const page = ref(1);
-const {
-  data: reportsData,
-  isLoading: reportsLoading,
-  error: reportsError,
-} = useReportsQuery(page);
+const { data: reportsData, isLoading: reportsLoading, error: reportsError } = useReportsQuery(page);
+const { data: reportReadStatus } = useReadStatusQuery('weekly_report');
+const reportReadIds = computed((): string[] => reportReadStatus.value?.readIds ?? []);
 
-/* ── 已讀狀態（紅點判斷） ── */
-const { data: readStatusData } = useReadStatusQuery('weekly_report');
-const readIds = computed((): string[] => readStatusData.value?.readIds ?? []);
-
-/* ── 投資記事（暫用 Mock） ── */
-const notes: InvestNote[] = [
-  {
-    id: 'n1',
-    category: 'direction',
-    title: '短線偏多，留意量能變化',
-    content: '加權指數站穩季線之上，短線維持偏多操作。若量能未能持續放大，建議降低追價意願，以拉回佈局為主。',
-    date: '2026-04-25',
-  },
-  {
-    id: 'n2',
-    category: 'note',
-    title: 'VIX 恐慌指數回落至 14',
-    content: 'CBOE VIX 指數從上週的 18.5 回落至 14.2，顯示市場恐慌情緒降溫，有利於風險性資產表現。',
-    date: '2026-04-24',
-    imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
-  },
-  {
-    id: 'n3',
-    category: 'event',
-    title: '聯準會利率決議下週登場',
-    content: '市場預期維持利率不變，但關注點在於點陣圖是否釋出年內降息訊號。建議決議前減少槓桿部位。',
-    date: '2026-04-23',
-  },
-  {
-    id: 'n4',
-    category: 'note',
-    title: '外資連三日買超台股',
-    content: '外資本週累計買超 285 億元，主要集中在半導體與金融權值股，為近一個月最大單週買超。',
-    date: '2026-04-21',
-  },
-];
+/* ── 投資記事列表 ── */
+const notePage = ref(1);
+const { data: notesData, isLoading: notesLoading, error: notesError } = useInvestNotesQuery(notePage);
+const { data: noteReadStatus } = useReadStatusQuery('invest_note');
+const noteReadIds = computed((): string[] => noteReadStatus.value?.readIds ?? []);
 </script>
 
 <template>
@@ -97,19 +75,28 @@ const notes: InvestNote[] = [
           <span>重試</span>
         </button>
       </div>
-
       <MarketIndexCard :data="index ?? null" :loading="loading" />
     </section>
 
-    <!-- Tab 區域（狀態持久化） -->
+    <!-- Tab 區域 -->
     <Tabs :model-value="activeTab" @update:model-value="activeTab = $event as TabValue">
       <TabsList>
-        <TabsTrigger value="reports">選股週報</TabsTrigger>
-        <TabsTrigger value="notes">投資記事</TabsTrigger>
+        <TabsTrigger value="reports" class="relative">
+          選股週報
+          <span v-if="reportUnread > 0" class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground">
+            {{ reportUnread }}
+          </span>
+        </TabsTrigger>
+        <TabsTrigger value="notes" class="relative">
+          投資記事
+          <span v-if="noteUnread > 0" class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground">
+            {{ noteUnread }}
+          </span>
+        </TabsTrigger>
       </TabsList>
 
+      <!-- 選股週報 -->
       <TabsContent value="reports" class="flex flex-col gap-3">
-        <!-- 載入中骨架 -->
         <template v-if="reportsLoading">
           <Card v-for="i in 2" :key="i">
             <CardHeader class="pb-2">
@@ -138,12 +125,7 @@ const notes: InvestNote[] = [
 
         <!-- 週報列表 -->
         <template v-else-if="reportsData?.reports?.length">
-          <ReportCard
-            v-for="report in reportsData.reports"
-            :key="report.id"
-            :report="report"
-            :is-unread="!readIds.includes(report.id)"
-          />
+          <ReportCard v-for="report in reportsData.reports" :key="report.id" :report="report" :is-unread="!reportReadIds.includes(report.id)" />
         </template>
 
         <!-- 空狀態 -->
@@ -152,8 +134,33 @@ const notes: InvestNote[] = [
         </div>
       </TabsContent>
 
+      <!-- 投資記事 -->
       <TabsContent value="notes" class="flex flex-col gap-3">
-        <NoteCard v-for="note in notes" :key="note.id" :note="note" />
+        <template v-if="notesLoading">
+          <Card v-for="i in 3" :key="i">
+            <CardHeader class="pb-2">
+              <div class="flex items-center gap-3">
+                <Skeleton class="h-10 w-10 rounded-2xl" />
+                <div class="flex flex-col gap-1.5">
+                  <Skeleton class="h-4 w-40" />
+                  <Skeleton class="h-3 w-20" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Skeleton class="h-5 w-16 rounded-full" />
+            </CardContent>
+          </Card>
+        </template>
+        <div v-else-if="notesError" class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6">
+          <p class="text-sm text-muted-foreground">記事載入失敗：{{ notesError.message }}</p>
+        </div>
+        <template v-else-if="notesData?.notes?.length">
+          <NoteCard v-for="n in notesData.notes" :key="n.id" :note="n" :is-unread="!noteReadIds.includes(n.id)" />
+        </template>
+        <div v-else class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8">
+          <p class="text-sm text-muted-foreground">尚無記事資料</p>
+        </div>
       </TabsContent>
     </Tabs>
   </DefaultLayout>
