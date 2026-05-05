@@ -61,24 +61,24 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
 /** 格式化金額 */
 function formatTotal(value: number): string {
   const sign = value >= 0 ? '+' : '';
-  return `${sign}NT$${value.toLocaleString()}`;
+  return `${sign}${value.toLocaleString()}`;
 }
 </script>
 
 <template>
   <DefaultLayout title="收益記錄總覽" subtitle="追蹤每月投資損益與績效分析">
     <!-- Header 操作列 -->
-    <section class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <Badge variant="outline" class="border-brand bg-white text-xs font-semibold text-foreground shadow-sm">
+    <section class="flex flex-wrap items-center justify-between gap-2">
+      <div class="flex min-w-0 flex-wrap items-center gap-2">
+        <Badge variant="outline" class="shrink-0 border-brand bg-white text-xs font-semibold text-foreground shadow-sm">
           年度 {{ formatTotal(yearTotal) }}
         </Badge>
-        <Badge :variant="monthTotal >= 0 ? 'gain' : 'loss'" class="text-xs">
+        <Badge :variant="monthTotal >= 0 ? 'gain' : 'loss'" class="shrink-0 text-xs">
           當月 {{ formatTotal(monthTotal) }}
         </Badge>
       </div>
       <button
-        class="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-xs font-medium text-brand-foreground transition hover:opacity-90"
+        class="flex shrink-0 items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-xs font-medium text-brand-foreground transition hover:opacity-90"
         @click="dialogOpen = true"
       >
         <Plus :size="14" :stroke-width="2" />

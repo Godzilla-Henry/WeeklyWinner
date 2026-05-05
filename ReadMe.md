@@ -1,7 +1,7 @@
 # Weekly Winner
 
-> **版本：** `5.8.0`
-> **最後更新：** 2026-05-05
+> **版本：** `v1.0.1`
+> **最後更新：** 2026-05-06
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
 ---
@@ -405,3 +405,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `5.7.0` | 2026-05-04 | **投資記事 API 串接**：新增 invest-notes API 模組、useInvestNoteQuery composable、Dashboard 記事列表改用真實 API（含 loading/error/empty）、InvestNoteView 改用 API + 自動標記已讀（invest_note）、Tab Badge 顯示各類型未讀數、通知下拉合併週報 + 記事（未讀優先排序）、移除所有 mock 資料 |
 | `5.7.1` | 2026-05-04 | UI 微調：NoteCard 排版修正（標題獨立行 + 箭頭固定右側）、記事類別配色統一（藍/綠/黃）、AppNav 觸控區域放大（48→56px）提升行動端操作體驗 |
 | `v1.0.0` | 2026-05-05 | **收益記錄功能**：vue-echarts 圖表整合（月份佔比圓餅圖 + 年度走勢長條圖）、年度目標設定與進度追蹤、新增記錄 Dialog、自訂 Select 元件（無 aria-hidden 問題）、API 串接（profit-records CRUD + yearly-goals upsert）、http.put/delete 方法、camelToSnake 工具函式、TanStack Query composables（useProfitRecordsQuery / useYearlyGoalsQuery / useRecordsData） |
+| `v1.0.1` | 2026-05-06 | **收益記錄 UX 優化**：股票名稱 Autocomplete（靜態台股清單 400+ 檔，支援代碼/名稱模糊搜尋）、viewport 禁止手機自動縮放（maximum-scale=1）、Header Badge 區 flex-wrap 防跑版、DialogContent X 按鈕改用 DialogClose 修正關閉錯誤 |
