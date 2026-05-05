@@ -2,6 +2,7 @@
 import { cn } from '@/lib/utils';
 import {
   DialogContent as DialogContentPrimitive,
+  DialogClose,
   DialogOverlay,
   DialogPortal,
   type DialogContentEmits,
@@ -43,12 +44,11 @@ const delegatedProps = computed(() => {
         <slot />
       </div>
 
-      <button
+      <DialogClose
         class="absolute right-4 top-4 rounded-full p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
-        @click="emits('escapeKeyDown', new KeyboardEvent('keydown'))"
       >
         <X :size="16" />
-      </button>
+      </DialogClose>
     </DialogContentPrimitive>
   </DialogPortal>
 </template>

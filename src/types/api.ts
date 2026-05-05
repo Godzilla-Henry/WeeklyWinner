@@ -152,3 +152,32 @@ export interface NoteDetailResponse {
   ok: boolean;
   note: InvestNoteDetail;
 }
+
+/* ── 收益記錄 ── */
+
+export type { ProfitRecord, ProfitRecordForm, YearlyGoal } from '@/types/module/records';
+
+/** 收益記錄列表回應 */
+export interface ProfitRecordsResponse {
+  ok: boolean;
+  records: import('@/types/module/records').ProfitRecord[];
+  total: number;
+}
+
+/** 單筆收益記錄回應 */
+export interface ProfitRecordResponse {
+  ok: boolean;
+  record: import('@/types/module/records').ProfitRecord;
+}
+
+/** 年度目標列表回應 */
+export interface YearlyGoalsResponse {
+  ok: boolean;
+  goals: import('@/types/module/records').YearlyGoal[];
+}
+
+/** 單筆年度目標回應 */
+export interface YearlyGoalResponse {
+  ok: boolean;
+  goal: import('@/types/module/records').YearlyGoal;
+}

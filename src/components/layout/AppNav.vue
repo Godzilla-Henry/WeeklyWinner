@@ -15,7 +15,7 @@ const route = useRoute();
 const navItems: NavItem[] = [
   { label: '總覽', to: '/', icon: LayoutDashboard },
   { label: '資產', to: '/portfolio', icon: Briefcase, disabled: true },
-  { label: '紀錄', to: '/records', icon: ClipboardList, disabled: true },
+  { label: '紀錄', to: '/records', icon: ClipboardList },
   { label: '設定', to: '/settings', icon: Settings },
 ];
 

@@ -43,4 +43,17 @@ export const queryKeys = {
   market: {
     taiex: ['market', 'taiex'] as const,
   },
+
+  /** 收益記錄 */
+  profitRecords: {
+    all: ['profitRecords'] as const,
+    list: (year?: number, month?: number) =>
+      ['profitRecords', 'list', { year, month }] as const,
+  },
+
+  /** 年度目標 */
+  yearlyGoals: {
+    all: ['yearlyGoals'] as const,
+    byYear: (year: number) => ['yearlyGoals', year] as const,
+  },
 };

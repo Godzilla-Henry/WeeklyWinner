@@ -1,7 +1,7 @@
 # Weekly Winner
 
-> **版本：** `5.7.1`
-> **最後更新：** 2026-05-03
+> **版本：** `5.8.0`
+> **最後更新：** 2026-05-05
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
 ---
@@ -17,8 +17,9 @@
 | Server State | TanStack Vue Query 5（快取、重試、自動失效） |
 | Routing | Vue Router 4（HTML5 history mode） |
 | Styling | Tailwind CSS 4（`@tailwindcss/vite`）+ shadcn-vue（CSS Variables） |
-| UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar, Skeleton, DropdownMenu） |
+| UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar, Skeleton, DropdownMenu, Select） |
 | Icons | Lucide Vue Next |
+| Charts | vue-echarts + ECharts 5（圓餅圖、長條圖） |
 | HTTP | Native `fetch` 封裝（`src/api/http.ts`，認證自動帶入 idToken） |
 | Backend | [Render](https://weeklywinnerbackend.onrender.com)（Node.js） |
 | Auth | LINE LIFF SDK `@line/liff` |
@@ -57,6 +58,8 @@ src/
 │   └── modules/
 │       ├── auth.ts             #   認證 API（login）
 │       ├── report.ts           #   週報 API（list / detail）
+│       ├── profitRecords.ts    #   收益記錄 API（CRUD）
+│       ├── yearlyGoals.ts      #   年度目標 API（get / upsert）
 │       ├── stock.ts            #   台股加權指數 API（證交所 FMTQIK）
 │       └── unread.ts           #   未讀數量 API（counts / mark-as-read）
 ├── assets/
@@ -75,6 +78,7 @@ src/
 │       ├── card/
 │       ├── dialog/
 │       ├── dropdown-menu/
+│       ├── select/
 │       ├── separator/
 │       ├── skeleton/
 │       ├── table/
@@ -85,6 +89,9 @@ src/
 │   ├── module/                 #   功能模組 TanStack Query Composables
 │   │   ├── useAuthQuery.ts     #     登入同步 Mutation
 │   │   ├── useMarketIndex.ts   #     加權指數 Query
+│   │   ├── useProfitRecordsQuery.ts #  收益記錄 Query + Mutations
+│   │   ├── useYearlyGoalsQuery.ts   #  年度目標 Query + Mutation
+│   │   ├── useRecordsData.ts   #     收益記錄頁面資料整合 Composable
 │   │   ├── useReportQuery.ts   #     週報列表 / 詳情 Query
 │   │   └── useUnreadQuery.ts   #     未讀數量 Query + 標記已讀 Mutation
 │   ├── useLiff.ts              #   LINE LIFF SDK 封裝（單例模式）
@@ -112,10 +119,11 @@ src/
 │   └── module/                 # 功能模組型別（.ts，需 export/import）
 │       ├── dashboard.ts
 │       ├── market.ts
+│       ├── records.ts
 │       ├── report.ts
 │       └── trade.ts
 ├── utils/
-│   ├── caseTransform.ts        # snake_case → camelCase 轉換工具
+│   ├── caseTransform.ts        # snake_case ↔ camelCase 雙向轉換工具
 │   └── format.ts               # 日期 / 文字格式化
 ├── views/                      # 功能模組（Feature-based）
 │   ├── dashboard/
@@ -132,7 +140,14 @@ src/
 │   │       ├── LiquidBar.vue
 │   │       └── LiquidCard.vue
 │   ├── records/
-│   │   └── RecordsView.vue
+│   │   ├── RecordsView.vue
+│   │   ├── components/
+│   │   │   ├── GoalProgressCard.vue
+│   │   │   ├── MonthPieChart.vue
+│   │   │   ├── RecordTable.vue
+│   │   │   └── YearBarChart.vue
+│   │   └── dialogs/
+│   │       └── AddRecordDialog.vue
 │   ├── settings/
 │   │   └── SettingsView.vue
 │   ├── stock-detail/
@@ -195,6 +210,8 @@ api/http.ts（publicHttp 公開 / http 認證）
 | 週報 | `api/modules/report.ts` | `GET /api/reports`, `GET /api/reports/:id` |
 | 未讀 | `api/modules/unread.ts` | `GET /api/unread-count`, `POST /api/mark-as-read` |
 | 台股指數 | `api/modules/stock.ts` | 證交所 FMTQIK（公開 API） |
+| 收益記錄 | `api/modules/profitRecords.ts` | `GET/POST /api/profit-records`, `PUT/DELETE /api/profit-records/:id` |
+| 年度目標 | `api/modules/yearlyGoals.ts` | `GET /api/yearly-goals`, `PUT /api/yearly-goals/:year` |
 
 ### TanStack Query 整合
 
@@ -207,6 +224,11 @@ api/http.ts（publicHttp 公開 / http 認證）
 | `useMarkAsReadMutation` | 標記已讀 | 自動 invalidate `['unread']` |
 | `useLoginMutation` | 登入同步 | — |
 | `useMarketIndex` | 加權指數 | `['market', 'taiex']` |
+| `useProfitRecordsQuery` | 收益記錄列表 | `['profitRecords', 'list', { year, month }]` |
+| `useCreateProfitRecord` | 新增收益記錄 | 自動 invalidate `['profitRecords']` |
+| `useDeleteProfitRecord` | 刪除收益記錄 | 自動 invalidate `['profitRecords']` |
+| `useYearlyGoalsQuery` | 年度目標 | `['yearlyGoals', year]` |
+| `useUpsertYearlyGoal` | 設定年度目標 | 自動 invalidate `['yearlyGoals']` |
 
 ### snake_case → camelCase 轉換
 
@@ -224,6 +246,10 @@ api/http.ts（publicHttp 公開 / http 認證）
 | `read_at` | `readAt` |
 | `user_id` | `userId` |
 | `image_url` | `imageUrl` |
+| `stock_name` | `stockName` |
+| `profit_loss` | `profitLoss` |
+| `target_amount` | `targetAmount` |
+| `updated_at` | `updatedAt` |
 
 ---
 
@@ -326,8 +352,8 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | 個人設定 | ✅ 已上線 | 帳戶安全 / 推播 / 顯示偏好 |
 | LINE LIFF 登入 | ✅ 已上線 | Web + LINE 內建瀏覽器 |
 | 後端 API 整合 | ✅ 已完成 | TanStack Query + fetch 封裝 |
+| 收益記錄（Records） | ✅ 已完成 | 月份圓餅圖 + 年度長條圖 + 明細表格 + 年度目標追蹤 |
 | 股市資產（Portfolio） | 🚧 開發中 | ComingSoon 遮罩 |
-| 收益統計（Records） | 🚧 開發中 | ComingSoon 遮罩 |
 
 ---
 
@@ -348,7 +374,7 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `/` | dashboard | 加權指數（即時 API）+ 選股週報 / 投資記事 Tab |
 | `/stock/:symbol` | stock-detail | 股票詳情（報價 + K 線占位 + 基本面） |
 | `/portfolio` | portfolio | 資產分析（LiquidCard + 持股比例 + 明細） |
-| `/records` | records | 收益統計（週期卡片 + 操作日誌 Tab） |
+| `/records` | records | 收益數據看板（月份圓餅圖 + 年度長條圖 + 明細表格 + 年度目標進度） |
 | `/settings` | settings | 個人設定（帳戶安全 / 推播 / 顯示偏好） |
 | `/weekly-report/:id` | weekly-report | 週報詳細頁（9 欄選股標的表格） |
 | `/invest-note/:id` | invest-note | 投資記事詳細頁（圖文 / 純文字） |
@@ -378,3 +404,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `5.6.0` | 2026-05-04 | **Dashboard UX 升級**：Tab 狀態持久化（URL query ?tab=）、NoteCard 極簡條列式重設計（Icon + 分割線）、InvestNoteView 詳情頁翻新（Hero 封面 + Blockquote 引言 + 相關記事導覽） |
 | `5.7.0` | 2026-05-04 | **投資記事 API 串接**：新增 invest-notes API 模組、useInvestNoteQuery composable、Dashboard 記事列表改用真實 API（含 loading/error/empty）、InvestNoteView 改用 API + 自動標記已讀（invest_note）、Tab Badge 顯示各類型未讀數、通知下拉合併週報 + 記事（未讀優先排序）、移除所有 mock 資料 |
 | `5.7.1` | 2026-05-04 | UI 微調：NoteCard 排版修正（標題獨立行 + 箭頭固定右側）、記事類別配色統一（藍/綠/黃）、AppNav 觸控區域放大（48→56px）提升行動端操作體驗 |
+| `v1.0.0` | 2026-05-05 | **收益記錄功能**：vue-echarts 圖表整合（月份佔比圓餅圖 + 年度走勢長條圖）、年度目標設定與進度追蹤、新增記錄 Dialog、自訂 Select 元件（無 aria-hidden 問題）、API 串接（profit-records CRUD + yearly-goals upsert）、http.put/delete 方法、camelToSnake 工具函式、TanStack Query composables（useProfitRecordsQuery / useYearlyGoalsQuery / useRecordsData） |

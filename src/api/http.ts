@@ -145,4 +145,29 @@ export const http = {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
+
+  put: <T>(url: string, body?: unknown): Promise<T> => {
+    const token = getAccessToken();
+    if (!token) {
+      forceReLogin();
+      return Promise.reject(new ApiError(401, '未登入，正在導向登入頁…'));
+    }
+    return request<T>(url, {
+      method: 'PUT',
+      body: body ?? {},
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+
+  delete: <T>(url: string): Promise<T> => {
+    const token = getAccessToken();
+    if (!token) {
+      forceReLogin();
+      return Promise.reject(new ApiError(401, '未登入，正在導向登入頁…'));
+    }
+    return request<T>(url, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
 };
