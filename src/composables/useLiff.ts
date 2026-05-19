@@ -11,6 +11,7 @@
 import { ref, readonly } from 'vue';
 import liff from '@line/liff';
 import { LIFF_ID } from '@/constants';
+import { isStandaloneMode, broadcastTokenReady, isLiffCallback } from '@/composables/shared/usePwaAuthBridge';
 
 /* ── 響應式狀態 ── */
 const initialized = ref(false);
@@ -22,6 +23,13 @@ const loading = ref(false);
 
 /* ── 單例鎖 ── */
 let initPromise: Promise<void> | null = null;
+
+/** 重置單例鎖（供 PWA 橋接重新 init 使用） */
+export function resetLiffInitPromise(): void {
+  initPromise = null;
+  initialized.value = false;
+  loggedIn.value = false;
+}
 
 /**
  * 初始化 LIFF SDK
@@ -45,8 +53,17 @@ function init(): Promise<void> {
       loggedIn.value = liff.isLoggedIn();
       inClient.value = liff.isInClient();
 
-      /* 清理 URL 上 LIFF 注入的 query params，避免重複初始化或 redirectUri 不匹配 */
-      if (!inClient.value && window.location.search.includes('liff.state')) {
+      /**
+       * LIFF OAuth callback 偵測：
+       * 若 URL 含 liff.state，代表這是系統瀏覽器處理 LINE 授權後的 callback 頁面。
+       * 廣播 TOKEN_READY 通知 PWA 視窗重新 init，然後清理 URL。
+       */
+      if (!inClient.value && isLiffCallback()) {
+        if (loggedIn.value) {
+          /* 授權成功 → 廣播通知 PWA */
+          broadcastTokenReady();
+        }
+        /* 清理 URL 上的 liff.state 參數 */
         const cleanUrl = `${window.location.origin}${window.location.pathname}`;
         window.history.replaceState(null, '', cleanUrl);
       }
@@ -65,18 +82,15 @@ function init(): Promise<void> {
 
 /**
  * 登入
- * PWA standalone 模式下強制用 redirectUri 指回 App 根路徑，
- * 避免 LINE OAuth 完成後跳出 PWA 進入系統瀏覽器
+ * - 一般模式：redirectUri 帶當前路徑
+ * - PWA standalone 模式：redirectUri 只用 origin（根路徑）
+ *   LINE OAuth 完成後系統瀏覽器會廣播 TOKEN_READY，PWA 收到後重新 init
  */
 function login(): void {
   if (!initialized.value) return;
 
   const { origin, pathname } = window.location;
-  /* standalone 模式：只用 origin（根路徑），避免帶入子路由造成 redirect 不匹配 */
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
-  const redirectUri = isStandalone ? origin : `${origin}${pathname}`;
+  const redirectUri = isStandaloneMode() ? origin : `${origin}${pathname}`;
   liff.login({ redirectUri });
 }
 

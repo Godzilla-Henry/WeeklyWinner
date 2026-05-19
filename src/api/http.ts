@@ -10,6 +10,7 @@
 
 import liff from '@line/liff';
 import { snakeToCamel } from '@/utils/caseTransform';
+import { isStandaloneMode } from '@/composables/shared/usePwaAuthBridge';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
@@ -61,10 +62,7 @@ function forceReLogin(): void {
 
   try {
     const { origin, pathname } = window.location;
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
-    const redirectUri = isStandalone ? origin : `${origin}${pathname}`;
+    const redirectUri = isStandaloneMode() ? origin : `${origin}${pathname}`;
     liff.login({ redirectUri });
   } catch {
     sessionStorage.removeItem(RELOGIN_KEY);
