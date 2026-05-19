@@ -5,7 +5,6 @@
  * - 放開後自動吸附至最近的左側或右側邊緣
  * - Android：攔截 beforeinstallprompt 觸發原生安裝
  * - iOS：顯示圖解導引彈窗
- * - standalone 模式下完全隱藏
  */
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { Download, X, Share } from 'lucide-vue-next';
@@ -15,14 +14,8 @@ const BTN_SIZE = 48;
 /** 邊緣間距（px） */
 const EDGE_MARGIN = 16;
 
-/** 是否已在 standalone 模式（已安裝） */
-const isStandalone = ref(false);
-
 /** beforeinstallprompt 事件暫存 */
 let deferredPrompt: Event | null = null;
-
-/** 是否顯示安裝按鈕 */
-const showButton = ref(false);
 
 /** 是否顯示 iOS 導引彈窗 */
 const showIosGuide = ref(false);
@@ -50,17 +43,13 @@ const isIos = computed((): boolean => {
   return /iphone|ipad|ipod/i.test(ua);
 });
 
-/** 偵測是否為 iOS Safari */
-const isIosSafari = computed((): boolean => {
-  const ua = navigator.userAgent;
-  return isIos.value && /safari/i.test(ua) && !/crios|fxios|opios/i.test(ua);
-});
-
 /** 按鈕動態樣式 */
 const buttonStyle = computed(() => ({
   left: `${posX.value}px`,
   top: `${posY.value}px`,
-  transition: isSnapping.value ? 'left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.05s ease' : 'none',
+  transition: isSnapping.value
+    ? 'left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.05s ease'
+    : 'none',
 }));
 
 /** 初始化按鈕位置（右下角） */
@@ -107,7 +96,6 @@ function onTouchStart(e: TouchEvent): void {
 
 function onTouchMove(e: TouchEvent): void {
   if (!isDragging.value) return;
-  e.preventDefault();
   const touch = e.touches[0];
   const dx = touch.clientX - startX;
   const dy = touch.clientY - startY;
@@ -165,34 +153,25 @@ function onMouseUp(): void {
 function handleBeforeInstallPrompt(e: Event): void {
   e.preventDefault();
   deferredPrompt = e;
-  showButton.value = true;
-}
-
-/** 處理 appinstalled 事件 */
-function handleAppInstalled(): void {
-  showButton.value = false;
-  deferredPrompt = null;
 }
 
 /** 點擊安裝按鈕（僅在未拖曳時觸發） */
 async function handleInstallClick(): Promise<void> {
   if (hasMoved) return;
 
+  /* iOS：顯示導引彈窗 */
   if (isIos.value) {
     showIosGuide.value = true;
     return;
   }
 
+  /* Android：觸發原生安裝提示 */
   if (!deferredPrompt) return;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const promptEvent = deferredPrompt as any;
   promptEvent.prompt();
-  const result = await promptEvent.userChoice;
-
-  if (result.outcome === 'accepted') {
-    showButton.value = false;
-  }
+  await promptEvent.userChoice;
   deferredPrompt = null;
 }
 
@@ -208,28 +187,13 @@ function handleResize(): void {
 }
 
 onMounted(() => {
-  const mq = window.matchMedia('(display-mode: standalone)');
-  isStandalone.value =
-    mq.matches ||
-    ('standalone' in navigator &&
-      (navigator as unknown as { standalone: boolean }).standalone);
-
-  if (isStandalone.value) return;
-
   initPosition();
-
   window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  window.addEventListener('appinstalled', handleAppInstalled);
   window.addEventListener('resize', handleResize);
-
-  if (isIos.value && isIosSafari.value) {
-    showButton.value = true;
-  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  window.removeEventListener('appinstalled', handleAppInstalled);
   window.removeEventListener('resize', handleResize);
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
@@ -237,23 +201,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- 可拖曳懸浮安裝按鈕 -->
-  <Transition name="pwa-fade">
-    <button
-      v-if="showButton && !isStandalone"
-      :style="buttonStyle"
-      class="fixed z-9990 flex h-12 w-12 select-none items-center justify-center rounded-full bg-brand text-brand-foreground shadow-liquid active:scale-95"
-      :class="{ 'opacity-70 scale-95': isDragging }"
-      aria-label="安裝應用程式至主畫面"
-      @touchstart.passive="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
-      @mousedown.prevent="onMouseDown"
-      @click="handleInstallClick"
-    >
-      <Download class="h-5 w-5 pointer-events-none" />
-    </button>
-  </Transition>
+  <!-- 可拖曳懸浮安裝按鈕（永遠顯示） -->
+  <button
+    :style="buttonStyle"
+    class="fixed z-9990 flex h-12 w-12 select-none items-center justify-center rounded-full bg-brand text-brand-foreground shadow-liquid active:scale-95"
+    :class="{ 'opacity-70 scale-95': isDragging }"
+    aria-label="安裝應用程式至主畫面"
+    @touchstart="onTouchStart"
+    @touchmove.prevent="onTouchMove"
+    @touchend="onTouchEnd"
+    @mousedown.prevent="onMouseDown"
+    @click="handleInstallClick"
+  >
+    <Download class="h-5 w-5 pointer-events-none" />
+  </button>
 
   <!-- iOS 導引彈窗 -->
   <Teleport to="body">
@@ -264,7 +225,6 @@ onBeforeUnmount(() => {
         @click.self="closeIosGuide"
       >
         <div class="mx-4 mb-6 w-full max-w-sm rounded-3xl bg-card p-6 shadow-float">
-          <!-- 標題 -->
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-lg font-semibold text-foreground">新增至主畫面</h3>
             <button
@@ -276,7 +236,6 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <!-- 步驟說明 -->
           <div class="space-y-4">
             <div class="flex items-start gap-3">
               <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
