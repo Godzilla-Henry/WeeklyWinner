@@ -1,7 +1,7 @@
 # Weekly Winner
 
-> **版本：** `v1.0.2`
-> **最後更新：** 2026-05-10
+> **版本：** `v1.0.3`
+> **最後更新：** 2026-05-19
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
 ---
@@ -407,3 +407,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `v1.0.0` | 2026-05-05 | **收益記錄功能**：vue-echarts 圖表整合（月份佔比圓餅圖 + 年度走勢長條圖）、年度目標設定與進度追蹤、新增記錄 Dialog、自訂 Select 元件（無 aria-hidden 問題）、API 串接（profit-records CRUD + yearly-goals upsert）、http.put/delete 方法、camelToSnake 工具函式、TanStack Query composables（useProfitRecordsQuery / useYearlyGoalsQuery / useRecordsData） |
 | `v1.0.1` | 2026-05-06 | **收益記錄 UX 優化**：股票名稱 Autocomplete（靜態台股清單 400+ 檔，支援代碼/名稱模糊搜尋）、viewport 禁止手機自動縮放（maximum-scale=1）、Header Badge 區 flex-wrap 防跑版、DialogContent X 按鈕改用 DialogClose 修正關閉錯誤 |
 | `v1.0.2` | 2026-05-10 | **圓餅圖響應式優化**：ResizeObserver 偵測容器寬度、窄螢幕 Legend 自動移至底部（可滾動）、項目過多時隱藏 Label 改用 Tooltip、minAngle 防極小扇區重疊、引導線長度動態調整 |
+| `v1.0.3` | 2026-05-19 | **PWA 支援**：新增 manifest.json + Service Worker（Cache First 靜態資源快取）、懸浮安裝按鈕（可拖曳 + 左右吸附，類似 Messenger 聊天頭像）、Android 攔截 beforeinstallprompt 原生安裝、iOS Safari 圖解導引彈窗、standalone 模式自動隱藏按鈕、iOS meta 標籤補齊 |

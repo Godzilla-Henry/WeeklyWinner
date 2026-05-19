@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import { RouterView } from 'vue-router';
 import TheHeader from '@/components/layout/TheHeader.vue';
 import AppNav from '@/components/layout/AppNav.vue';
+import PwaInstallButton from '@/components/pwa/PwaInstallButton.vue';
 
 /** App 掛載後淡出 Splash Screen */
 onMounted(() => {
@@ -20,5 +21,6 @@ onMounted(() => {
     <TheHeader />
     <RouterView />
     <AppNav />
+    <PwaInstallButton />
   </div>
 </template>

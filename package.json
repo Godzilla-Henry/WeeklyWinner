@@ -1,7 +1,7 @@
 {
   "name": "weekly-winner",
   "private": true,
-  "version": "5.7.1",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",

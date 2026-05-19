@@ -16,3 +16,12 @@ app.use(vueQueryPlugin);
 initLiff().then(() => {
   app.mount('#app');
 });
+
+/* 註冊 Service Worker */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      /* Service Worker 註冊失敗不影響主功能 */
+    });
+  });
+}
