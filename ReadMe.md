@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `v1.0.4`
+> **版本：** `v1.0.5`
 > **最後更新：** 2026-05-19
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -409,3 +409,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `v1.0.2` | 2026-05-10 | **圓餅圖響應式優化**：ResizeObserver 偵測容器寬度、窄螢幕 Legend 自動移至底部（可滾動）、項目過多時隱藏 Label 改用 Tooltip、minAngle 防極小扇區重疊、引導線長度動態調整 |
 | `v1.0.3` | 2026-05-19 | **PWA 支援**：新增 manifest.json + Service Worker（Cache First 靜態資源快取）、懸浮安裝按鈕（可拖曳 + 左右吸附，類似 Messenger 聊天頭像）、Android 攔截 beforeinstallprompt 原生安裝、iOS Safari 圖解導引彈窗、standalone 模式自動隱藏按鈕、iOS meta 標籤補齊 |
 | `v1.0.4` | 2026-05-19 | **PWA 安裝按鈕修正**：修正 LINE 內建瀏覽器無法安裝問題（提示用外部瀏覽器開啟）、修正桌面 Web 點擊無反應（新增通用說明彈窗）、拖曳吸附邏輯修正（移除 passive listener 衝突）、Service Worker 僅在正式環境註冊（避免干擾 Vite HMR） |
+| `v1.0.5` | 2026-05-19 | **PWA 登入循環修正**：修正 PWA standalone 模式下 LINE OAuth redirect 跳出 App 造成登入循環（redirectUri 改用 origin 根路徑）、LINE 瀏覽器導引改為一鍵複製網址引導至 Safari 安裝、Service Worker 限正式環境（HTTPS）才註冊 |
