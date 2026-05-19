@@ -48,6 +48,7 @@ function getAccessToken(): string | null {
 /**
  * 強制重新登入 LINE（含防迴圈機制）
  * 用 sessionStorage 記錄已觸發過，避免無限迴圈
+ * PWA standalone 模式下 redirectUri 只用 origin，避免跳出 App
  */
 function forceReLogin(): void {
   if (sessionStorage.getItem(RELOGIN_KEY)) {
@@ -60,7 +61,11 @@ function forceReLogin(): void {
 
   try {
     const { origin, pathname } = window.location;
-    liff.login({ redirectUri: `${origin}${pathname}` });
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
+    const redirectUri = isStandalone ? origin : `${origin}${pathname}`;
+    liff.login({ redirectUri });
   } catch {
     sessionStorage.removeItem(RELOGIN_KEY);
   }

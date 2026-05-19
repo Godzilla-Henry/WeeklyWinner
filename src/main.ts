@@ -17,8 +17,8 @@ initLiff().then(() => {
   app.mount('#app');
 });
 
-/* 註冊 Service Worker */
-if ('serviceWorker' in navigator) {
+/* 僅在正式環境（HTTPS）註冊 Service Worker，避免干擾 Vite HMR */
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {
       /* Service Worker 註冊失敗不影響主功能 */

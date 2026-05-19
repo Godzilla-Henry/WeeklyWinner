@@ -65,13 +65,18 @@ function init(): Promise<void> {
 
 /**
  * 登入
- * 使用乾淨的 URL（不帶 query/hash）避免 LIFF 400 Bad Request
+ * PWA standalone 模式下強制用 redirectUri 指回 App 根路徑，
+ * 避免 LINE OAuth 完成後跳出 PWA 進入系統瀏覽器
  */
 function login(): void {
   if (!initialized.value) return;
 
   const { origin, pathname } = window.location;
-  const redirectUri = `${origin}${pathname}`;
+  /* standalone 模式：只用 origin（根路徑），避免帶入子路由造成 redirect 不匹配 */
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
+  const redirectUri = isStandalone ? origin : `${origin}${pathname}`;
   liff.login({ redirectUri });
 }
 

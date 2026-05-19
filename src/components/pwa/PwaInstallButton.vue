@@ -8,7 +8,7 @@
  *    若尚未觸發 beforeinstallprompt → 顯示通用說明
  */
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import { Download, X, Share, ExternalLink } from 'lucide-vue-next';
+import { Download, X, Share } from 'lucide-vue-next';
 
 /** 按鈕尺寸（px） */
 const BTN_SIZE = 48;
@@ -22,6 +22,32 @@ let deferredPrompt: Event | null = null;
 const showIosGuide = ref(false);
 const showLineGuide = ref(false);
 const showFallbackGuide = ref(false);
+
+/** 複製網址狀態 */
+const copied = ref(false);
+
+/** 複製當前網址 */
+async function copyUrl(): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  } catch {
+    /* clipboard API 不可用時 fallback */
+    const input = document.createElement('input');
+    input.value = window.location.href;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  }
+}
 
 /** 按鈕位置 */
 const posX = ref(0);
@@ -276,7 +302,7 @@ onBeforeUnmount(() => {
       >
         <div class="mx-4 mb-6 w-full max-w-sm rounded-3xl bg-card p-6 shadow-float">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-foreground">如何安裝 App</h3>
+            <h3 class="text-lg font-semibold text-foreground">安裝 App 至主畫面</h3>
             <button
               class="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground"
               aria-label="關閉"
@@ -286,7 +312,7 @@ onBeforeUnmount(() => {
             </button>
           </div>
           <p class="mb-4 text-sm text-muted-foreground">
-            LINE 內建瀏覽器不支援安裝 App，請用外部瀏覽器開啟後再安裝。
+            LINE 瀏覽器不支援安裝 App，請依以下步驟操作：
           </p>
           <div class="space-y-3">
             <div class="flex items-start gap-3">
@@ -294,17 +320,29 @@ onBeforeUnmount(() => {
                 <span class="text-sm font-bold">1</span>
               </div>
               <p class="flex-1 text-sm text-foreground">
-                點擊右上角
-                <ExternalLink class="inline-block h-4 w-4 text-brand" />
-                選擇<span class="font-medium text-brand">「用瀏覽器開啟」</span>
+                點擊下方按鈕複製網址
               </p>
             </div>
+            <button
+              class="w-full rounded-2xl bg-brand py-3 text-sm font-medium text-brand-foreground transition-opacity active:opacity-70"
+              @click="copyUrl"
+            >
+              {{ copied ? '✓ 已複製！' : '複製網址' }}
+            </button>
             <div class="flex items-start gap-3">
               <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
                 <span class="text-sm font-bold">2</span>
               </div>
               <p class="flex-1 text-sm text-foreground">
-                在 Safari 或 Chrome 中再次點擊下載按鈕即可安裝
+                開啟 <span class="font-medium text-brand">Safari</span>，將網址貼到網址列並前往
+              </p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <span class="text-sm font-bold">3</span>
+              </div>
+              <p class="flex-1 text-sm text-foreground">
+                在 Safari 中點擊下載按鈕，即可安裝至主畫面
               </p>
             </div>
           </div>
