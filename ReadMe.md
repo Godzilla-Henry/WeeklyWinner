@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `v1.0.5`
+> **版本：** `v1.0.0`
 > **最後更新：** 2026-05-19
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -385,28 +385,30 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 
 | 版本 | 日期 | 說明 |
 | --- | --- | --- |
-| `1.0.0` | 2026-04-25 | 初版建立 |
-| `2.0.0` | 2026-04-25 | 架構升級：shadcn-vue + 功能導向結構 + Liquid Design |
-| `3.0.0` | 2026-04-26 | LINE LIFF SDK 整合、型別系統重構（shared / module 分層）、DefaultLayout 統一佈局 |
-| `4.0.0` | 2026-04-26 | 調整手機上的光暈效果 |
-| `4.0.1` | 2026-04-26 | 新增Web版Line登入功能，調整登入流程 |
-| `4.0.2` | 2026-04-26 | 台股指數 API 串接（證交所 TAIEX + 櫃買 TWO）、Axios 封裝、Vite Proxy、Loading/Error 狀態 |
-| `4.0.3` | 2026-04-26 | 移除櫃買指數（CORS 無解），修正 FMTQIK 欄位對應（成交金額=成交量），單一加權指數卡片 |
-| `4.0.4` | 2026-04-26 | 環境變數區分正式/開發 API proxy、Netlify `_redirects` 設定、Portfolio/Records 加入 ComingSoon 遮罩 |
-| `4.0.5` | 2026-04-26 | Skeleton 載入狀態、API 失敗顯示 `—`、選股標的類型三色 Badge、SelectionTable 行動版卡片自適應、DropdownMenu 元件 |
-| `5.0.0` | 2026-05-01 | **API 架構重構**：移除 Axios 改用 native fetch、TanStack Vue Query 整合、API 模組化（auth/report/unread/stock）、composables 分層（shared/module）、snake_case→camelCase 自動轉換、FMTQIK 月份 fallback 修正 |
-| `5.1.0` | 2026-05-01 | 後端 API 串接（Render）、Vite proxy 設定、週報列表/詳情改用真實 API、紅漲綠跌色系修正、週報公開 API 不需登入 |
-| `5.2.0` | 2026-05-01 | HTTP client 自動帶入 idToken、API 函式移除 token 參數、401 自動重新登入、App 啟動登入同步、未讀 Badge 串接真實 API（60 秒刷新）、週報詳情自動標記已讀 |
-| `5.3.0` | 2026-05-03 | **Badge 已讀系統完整串接**：改用 Access Token 認證（取代 ID Token）、新增 read-status API 串接、週報卡片未讀紅點 + NEW 標籤、Bell 通知下拉列表（顯示未讀/已讀狀態）、防迴圈重新登入機制、紅漲綠跌色系修正 |
-| `5.3.1` | 2026-05-03 | 修正正式環境 API 404：`.gitignore` 允許 `.env.production` 被 commit，確保 Netlify build 時 `VITE_API_BASE_URL` 正確注入 |
-| `5.4.0` | 2026-05-03 | **Splash Screen 載入體驗優化**：純 CSS 品牌動畫（不依賴 Vue/JS）、三階段提示文字（準備中 → 伺服器喚醒 → 即將完成）、Vue mount 後平滑淡出 |
-| `5.5.0` | 2026-05-04 | **投資記事改版**：NoteCard 支援圖文並排 / 純文字雙版型、新增 InvestNoteView 詳細頁（圖文排版 + 段落解析）、category 調整為 direction / note / event、新增 imageUrl 欄位 |
-| `5.6.0` | 2026-05-04 | **Dashboard UX 升級**：Tab 狀態持久化（URL query ?tab=）、NoteCard 極簡條列式重設計（Icon + 分割線）、InvestNoteView 詳情頁翻新（Hero 封面 + Blockquote 引言 + 相關記事導覽） |
-| `5.7.0` | 2026-05-04 | **投資記事 API 串接**：新增 invest-notes API 模組、useInvestNoteQuery composable、Dashboard 記事列表改用真實 API（含 loading/error/empty）、InvestNoteView 改用 API + 自動標記已讀（invest_note）、Tab Badge 顯示各類型未讀數、通知下拉合併週報 + 記事（未讀優先排序）、移除所有 mock 資料 |
-| `5.7.1` | 2026-05-04 | UI 微調：NoteCard 排版修正（標題獨立行 + 箭頭固定右側）、記事類別配色統一（藍/綠/黃）、AppNav 觸控區域放大（48→56px）提升行動端操作體驗 |
-| `v1.0.0` | 2026-05-05 | **收益記錄功能**：vue-echarts 圖表整合（月份佔比圓餅圖 + 年度走勢長條圖）、年度目標設定與進度追蹤、新增記錄 Dialog、自訂 Select 元件（無 aria-hidden 問題）、API 串接（profit-records CRUD + yearly-goals upsert）、http.put/delete 方法、camelToSnake 工具函式、TanStack Query composables（useProfitRecordsQuery / useYearlyGoalsQuery / useRecordsData） |
-| `v1.0.1` | 2026-05-06 | **收益記錄 UX 優化**：股票名稱 Autocomplete（靜態台股清單 400+ 檔，支援代碼/名稱模糊搜尋）、viewport 禁止手機自動縮放（maximum-scale=1）、Header Badge 區 flex-wrap 防跑版、DialogContent X 按鈕改用 DialogClose 修正關閉錯誤 |
-| `v1.0.2` | 2026-05-10 | **圓餅圖響應式優化**：ResizeObserver 偵測容器寬度、窄螢幕 Legend 自動移至底部（可滾動）、項目過多時隱藏 Label 改用 Tooltip、minAngle 防極小扇區重疊、引導線長度動態調整 |
-| `v1.0.3` | 2026-05-19 | **PWA 支援**：新增 manifest.json + Service Worker（Cache First 靜態資源快取）、懸浮安裝按鈕（可拖曳 + 左右吸附，類似 Messenger 聊天頭像）、Android 攔截 beforeinstallprompt 原生安裝、iOS Safari 圖解導引彈窗、standalone 模式自動隱藏按鈕、iOS meta 標籤補齊 |
-| `v1.0.4` | 2026-05-19 | **PWA 安裝按鈕修正**：修正 LINE 內建瀏覽器無法安裝問題（提示用外部瀏覽器開啟）、修正桌面 Web 點擊無反應（新增通用說明彈窗）、拖曳吸附邏輯修正（移除 passive listener 衝突）、Service Worker 僅在正式環境註冊（避免干擾 Vite HMR） |
-| `v1.0.5` | 2026-05-19 | **PWA 登入循環修正**：修正 PWA standalone 模式下 LINE OAuth redirect 跳出 App 造成登入循環（redirectUri 改用 origin 根路徑）、LINE 瀏覽器導引改為一鍵複製網址引導至 Safari 安裝、Service Worker 限正式環境（HTTPS）才註冊 |
+| `v0.0.1` | 2026-04-25 | 初版建立 |
+| `v0.0.2` | 2026-04-25 | 架構升級：shadcn-vue + 功能導向結構 + Liquid Design |
+| `v0.0.3` | 2026-04-26 | LINE LIFF SDK 整合、型別系統重構（shared / module 分層）、DefaultLayout 統一佈局 |
+| `v0.0.4` | 2026-04-26 | 調整手機上的光暈效果 |
+| `v0.0.5` | 2026-04-26 | 新增Web版Line登入功能，調整登入流程 |
+| `v0.0.6` | 2026-04-26 | 台股指數 API 串接（證交所 TAIEX + 櫃買 TWO）、Axios 封裝、Vite Proxy、Loading/Error 狀態 |
+| `v0.0.7` | 2026-04-26 | 移除櫃買指數（CORS 無解），修正 FMTQIK 欄位對應（成交金額=成交量），單一加權指數卡片 |
+| `v0.0.8` | 2026-04-26 | 環境變數區分正式/開發 API proxy、Netlify `_redirects` 設定、Portfolio/Records 加入 ComingSoon 遮罩 |
+| `v0.0.9` | 2026-04-26 | Skeleton 載入狀態、API 失敗顯示 `—`、選股標的類型三色 Badge、SelectionTable 行動版卡片自適應、DropdownMenu 元件 |
+| `v0.0.10` | 2026-05-01 | **API 架構重構**：移除 Axios 改用 native fetch、TanStack Vue Query 整合、API 模組化（auth/report/unread/stock）、composables 分層（shared/module）、snake_case→camelCase 自動轉換、FMTQIK 月份 fallback 修正 |
+| `v0.0.11` | 2026-05-01 | 後端 API 串接（Render）、Vite proxy 設定、週報列表/詳情改用真實 API、紅漲綠跌色系修正、週報公開 API 不需登入 |
+| `v0.0.12` | 2026-05-01 | HTTP client 自動帶入 idToken、API 函式移除 token 參數、401 自動重新登入、App 啟動登入同步、未讀 Badge 串接真實 API（60 秒刷新）、週報詳情自動標記已讀 |
+| `v0.0.13` | 2026-05-03 | **Badge 已讀系統完整串接**：改用 Access Token 認證（取代 ID Token）、新增 read-status API 串接、週報卡片未讀紅點 + NEW 標籤、Bell 通知下拉列表（顯示未讀/已讀狀態）、防迴圈重新登入機制、紅漲綠跌色系修正 |
+| `v0.0.14` | 2026-05-03 | 修正正式環境 API 404：`.gitignore` 允許 `.env.production` 被 commit，確保 Netlify build 時 `VITE_API_BASE_URL` 正確注入 |
+| `v0.0.15` | 2026-05-03 | **Splash Screen 載入體驗優化**：純 CSS 品牌動畫（不依賴 Vue/JS）、三階段提示文字（準備中 → 伺服器喚醒 → 即將完成）、Vue mount 後平滑淡出 |
+| `v0.0.16` | 2026-05-04 | **投資記事改版**：NoteCard 支援圖文並排 / 純文字雙版型、新增 InvestNoteView 詳細頁（圖文排版 + 段落解析）、category 調整為 direction / note / event、新增 imageUrl 欄位 |
+| `v0.0.17` | 2026-05-04 | **Dashboard UX 升級**：Tab 狀態持久化（URL query ?tab=）、NoteCard 極簡條列式重設計（Icon + 分割線）、InvestNoteView 詳情頁翻新（Hero 封面 + Blockquote 引言 + 相關記事導覽） |
+| `v0.0.18` | 2026-05-04 | **投資記事 API 串接**：新增 invest-notes API 模組、useInvestNoteQuery composable、Dashboard 記事列表改用真實 API（含 loading/error/empty）、InvestNoteView 改用 API + 自動標記已讀（invest_note）、Tab Badge 顯示各類型未讀數、通知下拉合併週報 + 記事（未讀優先排序）、移除所有 mock 資料 |
+| `v0.0.19` | 2026-05-04 | UI 微調：NoteCard 排版修正（標題獨立行 + 箭頭固定右側）、記事類別配色統一（藍/綠/黃）、AppNav 觸控區域放大（48→56px）提升行動端操作體驗 |
+| `v0.0.20` | 2026-05-05 | **收益記錄功能**：vue-echarts 圖表整合（月份佔比圓餅圖 + 年度走勢長條圖）、年度目標設定與進度追蹤、新增記錄 Dialog、自訂 Select 元件（無 aria-hidden 問題）、API 串接（profit-records CRUD + yearly-goals upsert）、http.put/delete 方法、camelToSnake 工具函式、TanStack Query composables（useProfitRecordsQuery / useYearlyGoalsQuery / useRecordsData） |
+| `v0.0.21` | 2026-05-06 | **收益記錄 UX 優化**：股票名稱 Autocomplete（靜態台股清單 400+ 檔，支援代碼/名稱模糊搜尋）、viewport 禁止手機自動縮放（maximum-scale=1）、Header Badge 區 flex-wrap 防跑版、DialogContent X 按鈕改用 DialogClose 修正關閉錯誤 |
+| `v0.0.22` | 2026-05-10 | **圓餅圖響應式優化**：ResizeObserver 偵測容器寬度、窄螢幕 Legend 自動移至底部（可滾動）、項目過多時隱藏 Label 改用 Tooltip、minAngle 防極小扇區重疊、引導線長度動態調整 |
+| `v0.0.23` | 2026-05-19 | **PWA 支援**：新增 manifest.json + Service Worker（Cache First 靜態資源快取）、懸浮安裝按鈕（可拖曳 + 左右吸附，類似 Messenger 聊天頭像）、Android 攔截 beforeinstallprompt 原生安裝、iOS Safari 圖解導引彈窗、standalone 模式自動隱藏按鈕、iOS meta 標籤補齊 |
+| `v0.0.24` | 2026-05-19 | **PWA 安裝按鈕修正**：修正 LINE 內建瀏覽器無法安裝問題（提示用外部瀏覽器開啟）、修正桌面 Web 點擊無反應（新增通用說明彈窗）、拖曳吸附邏輯修正（移除 passive listener 衝突）、Service Worker 僅在正式環境註冊（避免干擾 Vite HMR） |
+| `v0.0.25` | 2026-05-19 | **PWA 登入循環修正**：修正 PWA standalone 模式下 LINE OAuth redirect 跳出 App 造成登入循環（redirectUri 改用 origin 根路徑）、LINE 瀏覽器導引改為一鍵複製網址引導至 Safari 安裝、Service Worker 限正式環境（HTTPS）才註冊 |
+| `v0.0.26` | 2026-05-19 | **PWA 登入狀態同步**：實作 BroadcastChannel 橋接機制（usePwaAuthBridge）、系統瀏覽器完成 LINE OAuth 後廣播 TOKEN_READY 通知 PWA 視窗重新 init LIFF、新增 resetLiffInitPromise 重置單例鎖、http.ts 統一使用 isStandaloneMode 工具函式 |
+| `v1.0.0` | 2026-05-19 | **正式版本發布**：完整 PWA 支援（manifest + Service Worker + 懸浮安裝按鈕）、LINE LIFF 登入整合、BroadcastChannel 跨環境登入橋接、收益記錄 / 年度目標 / 圓餅圖 / 長條圖、選股週報 / 投資記事、台股加權指數即時 API |
