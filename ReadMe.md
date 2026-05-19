@@ -1,6 +1,6 @@
 # Weekly Winner
 
-> **版本：** `v1.0.3`
+> **版本：** `v1.0.4`
 > **最後更新：** 2026-05-19
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
@@ -408,3 +408,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `v1.0.1` | 2026-05-06 | **收益記錄 UX 優化**：股票名稱 Autocomplete（靜態台股清單 400+ 檔，支援代碼/名稱模糊搜尋）、viewport 禁止手機自動縮放（maximum-scale=1）、Header Badge 區 flex-wrap 防跑版、DialogContent X 按鈕改用 DialogClose 修正關閉錯誤 |
 | `v1.0.2` | 2026-05-10 | **圓餅圖響應式優化**：ResizeObserver 偵測容器寬度、窄螢幕 Legend 自動移至底部（可滾動）、項目過多時隱藏 Label 改用 Tooltip、minAngle 防極小扇區重疊、引導線長度動態調整 |
 | `v1.0.3` | 2026-05-19 | **PWA 支援**：新增 manifest.json + Service Worker（Cache First 靜態資源快取）、懸浮安裝按鈕（可拖曳 + 左右吸附，類似 Messenger 聊天頭像）、Android 攔截 beforeinstallprompt 原生安裝、iOS Safari 圖解導引彈窗、standalone 模式自動隱藏按鈕、iOS meta 標籤補齊 |
+| `v1.0.4` | 2026-05-19 | **PWA 安裝按鈕修正**：修正 LINE 內建瀏覽器無法安裝問題（提示用外部瀏覽器開啟）、修正桌面 Web 點擊無反應（新增通用說明彈窗）、拖曳吸附邏輯修正（移除 passive listener 衝突）、Service Worker 僅在正式環境註冊（避免干擾 Vite HMR） |
