@@ -3,6 +3,11 @@ import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import type { HTMLAttributes } from 'vue';
 
+const props = defineProps<{
+  class?: HTMLAttributes['class'];
+  variant?: NonNullable<BadgeVariants['variant']>;
+}>();
+
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   {
@@ -25,10 +30,6 @@ const badgeVariants = cva(
 
 type BadgeVariants = VariantProps<typeof badgeVariants>;
 
-const props = defineProps<{
-  class?: HTMLAttributes['class'];
-  variant?: NonNullable<BadgeVariants['variant']>;
-}>();
 </script>
 
 <template>

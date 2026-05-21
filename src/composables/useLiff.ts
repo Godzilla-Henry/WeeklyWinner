@@ -82,13 +82,25 @@ function init(): Promise<void> {
 
 /**
  * 登入
- * - 一般模式：redirectUri 帶當前路徑
- * - PWA standalone 模式：redirectUri 只用 origin（根路徑）
+ * - 行動裝置：使用 line://app/{LIFF_ID} 深層連結開啟 LINE App，在 WebView 內完成登入
+ * - 桌面一般模式：redirectUri 帶當前路徑
+ * - 桌面 PWA standalone 模式：redirectUri 只用 origin（根路徑）
  *   LINE OAuth 完成後系統瀏覽器會廣播 TOKEN_READY，PWA 收到後重新 init
  */
 function login(): void {
   if (!initialized.value) return;
 
+  // 行動裝置偵測：UA 含行動裝置關鍵字或 maxTouchPoints > 1（涵蓋 iPad 等平板）
+  const isMobile =
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || navigator.maxTouchPoints > 1;
+
+  if (isMobile) {
+    // 行動裝置：深層連結開啟 LINE App → WebView 載入 LIFF URL → 自動登入
+    window.location.href = `line://app/${LIFF_ID}`;
+    return;
+  }
+
+  // 桌面：維持現有 liff.login() 流程
   const { origin, pathname } = window.location;
   const redirectUri = isStandaloneMode() ? origin : `${origin}${pathname}`;
   liff.login({ redirectUri });

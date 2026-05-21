@@ -62,22 +62,32 @@ function goBack(): void {
           class="-ml-2 flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-sm text-muted-foreground transition hover:bg-accent hover:text-foreground"
           @click="goBack"
         >
-          <ArrowLeft :size="15" :stroke-width="2" />
+          <ArrowLeft
+            :size="15"
+            :stroke-width="2"
+          />
           <span>總覽</span>
         </button>
       </nav>
 
       <!-- 標題骨架 -->
-      <div v-if="isLoading" class="mt-3 flex flex-col gap-2">
+      <div
+        v-if="isLoading"
+        class="mt-3 flex flex-col gap-2"
+      >
         <Skeleton class="h-6 w-48" />
         <Skeleton class="h-4 w-24" />
       </div>
 
       <template v-else-if="note">
         <div class="mt-3">
-          <h2 class="text-lg font-bold text-foreground">{{ note.title }}</h2>
+          <h2 class="text-lg font-bold text-foreground">
+            {{ note.title }}
+          </h2>
           <div class="mt-1 flex items-center gap-2">
-            <p class="text-sm text-muted-foreground">{{ note.publishDate }}</p>
+            <p class="text-sm text-muted-foreground">
+              {{ note.publishDate }}
+            </p>
             <Badge :class="categoryBadgeClass[note.category]">
               {{ noteCategoryLabel[note.category] }}
             </Badge>
@@ -102,9 +112,16 @@ function goBack(): void {
     <!-- 錯誤狀態 -->
     <Card v-else-if="error">
       <CardContent class="flex flex-col items-center justify-center gap-4 p-12">
-        <p class="text-lg font-medium text-muted-foreground">載入失敗</p>
-        <p class="text-sm text-muted-foreground">{{ error.message }}</p>
-        <button class="rounded-full bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition hover:opacity-90" @click="goBack">
+        <p class="text-lg font-medium text-muted-foreground">
+          載入失敗
+        </p>
+        <p class="text-sm text-muted-foreground">
+          {{ error.message }}
+        </p>
+        <button
+          class="rounded-full bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition hover:opacity-90"
+          @click="goBack"
+        >
           返回總覽
         </button>
       </CardContent>
@@ -119,11 +136,22 @@ function goBack(): void {
           </p>
 
           <!-- 封面圖 -->
-          <div v-if="note.imageUrl" class="overflow-hidden rounded-xl">
-            <img :src="note.imageUrl" :alt="note.title" class="w-full object-cover" />
+          <div
+            v-if="note.imageUrl"
+            class="overflow-hidden rounded-xl"
+          >
+            <img
+              :src="note.imageUrl"
+              :alt="note.title"
+              class="w-full object-cover"
+            >
           </div>
 
-          <p v-for="(paragraph, idx) in paragraphs.slice(1)" :key="idx" class="text-sm leading-7 text-muted-foreground">
+          <p
+            v-for="(paragraph, idx) in paragraphs.slice(1)"
+            :key="idx"
+            class="text-sm leading-7 text-muted-foreground"
+          >
             {{ paragraph }}
           </p>
         </CardContent>
@@ -133,8 +161,13 @@ function goBack(): void {
     <!-- 找不到記事 -->
     <Card v-else>
       <CardContent class="flex flex-col items-center justify-center gap-4 p-12">
-        <p class="text-lg font-medium text-muted-foreground">找不到此記事</p>
-        <button class="rounded-full bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition hover:opacity-90" @click="goBack">
+        <p class="text-lg font-medium text-muted-foreground">
+          找不到此記事
+        </p>
+        <button
+          class="rounded-full bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition hover:opacity-90"
+          @click="goBack"
+        >
           返回總覽
         </button>
       </CardContent>

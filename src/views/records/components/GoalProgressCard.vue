@@ -62,11 +62,19 @@ const isAchieved = computed((): boolean => {
       <div class="mb-4 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-muted">
-            <Target :size="15" :stroke-width="2" class="text-brand" />
+            <Target
+              :size="15"
+              :stroke-width="2"
+              class="text-brand"
+            />
           </div>
           <div>
-            <p class="text-sm font-semibold text-foreground">{{ year }} 年度目標</p>
-            <p class="text-[11px] text-muted-foreground">投資收益追蹤</p>
+            <p class="text-sm font-semibold text-foreground">
+              {{ year }} 年度目標
+            </p>
+            <p class="text-[11px] text-muted-foreground">
+              投資收益追蹤
+            </p>
           </div>
         </div>
         <button
@@ -74,13 +82,19 @@ const isAchieved = computed((): boolean => {
           class="flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-muted-foreground transition hover:bg-muted hover:text-foreground"
           @click="startEdit"
         >
-          <Pencil :size="11" :stroke-width="2" />
+          <Pencil
+            :size="11"
+            :stroke-width="2"
+          />
           <span>{{ progress ? '編輯' : '設定' }}</span>
         </button>
       </div>
 
       <!-- 編輯模式 -->
-      <div v-if="isEditing" class="flex items-center gap-2">
+      <div
+        v-if="isEditing"
+        class="flex items-center gap-2"
+      >
         <span class="text-xs text-muted-foreground">目標金額</span>
         <input
           v-model.number="editAmount"
@@ -88,18 +102,24 @@ const isAchieved = computed((): boolean => {
           min="1"
           step="10000"
           class="w-36 rounded-lg border border-border bg-white px-3 py-1.5 text-sm outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-        />
+        >
         <button
           class="rounded-md p-1.5 text-gain transition hover:bg-gain/10"
           @click="confirmEdit"
         >
-          <Check :size="14" :stroke-width="2.5" />
+          <Check
+            :size="14"
+            :stroke-width="2.5"
+          />
         </button>
         <button
           class="rounded-md p-1.5 text-muted-foreground transition hover:bg-muted"
           @click="cancelEdit"
         >
-          <X :size="14" :stroke-width="2.5" />
+          <X
+            :size="14"
+            :stroke-width="2.5"
+          />
         </button>
       </div>
 
@@ -108,7 +128,9 @@ const isAchieved = computed((): boolean => {
         <!-- 大數字展示 -->
         <div class="mb-4 flex items-end justify-between">
           <div>
-            <p class="text-[11px] text-muted-foreground">已實現收益</p>
+            <p class="text-[11px] text-muted-foreground">
+              已實現收益
+            </p>
             <p
               class="text-2xl font-bold tracking-tight"
               :class="progress.currentAmount >= 0 ? 'text-foreground' : 'text-loss'"
@@ -117,7 +139,9 @@ const isAchieved = computed((): boolean => {
             </p>
           </div>
           <div class="text-right">
-            <p class="text-[11px] text-muted-foreground">目標</p>
+            <p class="text-[11px] text-muted-foreground">
+              目標
+            </p>
             <p class="text-sm font-medium text-muted-foreground">
               {{ formatCurrency(progress.targetAmount) }}
             </p>
@@ -138,15 +162,23 @@ const isAchieved = computed((): boolean => {
           <span class="text-[11px] text-muted-foreground">
             {{ isAchieved ? '🎉 恭喜達標！' : `還差 ${formatCurrency(progress.remaining)}` }}
           </span>
-          <span class="text-xs font-semibold" :class="isAchieved ? 'text-gain' : 'text-brand'">
+          <span
+            class="text-xs font-semibold"
+            :class="isAchieved ? 'text-gain' : 'text-brand'"
+          >
             {{ percentText }}%
           </span>
         </div>
       </template>
 
       <!-- 尚未設定目標 -->
-      <div v-else class="flex flex-col items-center gap-3 py-4">
-        <p class="text-sm text-muted-foreground">尚未設定年度收益目標</p>
+      <div
+        v-else
+        class="flex flex-col items-center gap-3 py-4"
+      >
+        <p class="text-sm text-muted-foreground">
+          尚未設定年度收益目標
+        </p>
         <button
           class="rounded-lg bg-brand px-4 py-1.5 text-xs font-medium text-brand-foreground transition hover:opacity-90"
           @click="startEdit"

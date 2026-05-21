@@ -95,7 +95,11 @@ function navigateToItem(item: NotificationItem): void {
     <div class="mx-auto flex h-16 max-w-4xl items-center justify-between px-8 sm:px-10">
       <!-- Logo -->
       <div class="flex items-center gap-3">
-        <img src="@/assets/img/logo.svg" alt="Weekly Winner" class="h-12" />
+        <img
+          src="@/assets/img/logo.svg"
+          alt="Weekly Winner"
+          class="h-12"
+        >
       </div>
 
       <!-- 功能區 -->
@@ -108,7 +112,10 @@ function navigateToItem(item: NotificationItem): void {
                 class="relative flex h-10 w-10 items-center justify-center rounded-full bg-card text-muted-foreground shadow-(--shadow-soft) transition-all duration-300 hover:shadow-(--shadow-card) hover:text-foreground"
                 aria-label="通知"
               >
-                <Bell :size="18" :stroke-width="1.75" />
+                <Bell
+                  :size="18"
+                  :stroke-width="1.75"
+                />
                 <span
                   v-if="unreadTotal > 0"
                   class="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground ring-2 ring-background"
@@ -118,11 +125,17 @@ function navigateToItem(item: NotificationItem): void {
               </button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent class="w-72" align="end">
+            <DropdownMenuContent
+              class="w-72"
+              align="end"
+            >
               <DropdownMenuLabel>
                 <div class="flex items-center justify-between">
                   <span class="text-sm font-semibold">通知</span>
-                  <span v-if="unreadTotal > 0" class="text-xs font-medium text-brand">{{ unreadTotal }} 則未讀</span>
+                  <span
+                    v-if="unreadTotal > 0"
+                    class="text-xs font-medium text-brand"
+                  >{{ unreadTotal }} 則未讀</span>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -134,13 +147,32 @@ function navigateToItem(item: NotificationItem): void {
                   class="flex items-start gap-3 px-3 py-2.5"
                   @select="navigateToItem(item)"
                 >
-                  <div class="relative mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" :class="item.isUnread ? 'bg-brand-muted' : 'bg-muted'">
-                    <FileText v-if="item.type === 'report'" :size="14" :stroke-width="1.75" :class="item.isUnread ? 'text-brand' : 'text-muted-foreground'" />
-                    <BookOpen v-else :size="14" :stroke-width="1.75" :class="item.isUnread ? 'text-brand' : 'text-muted-foreground'" />
-                    <span v-if="item.isUnread" class="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-gain ring-1 ring-card" />
+                  <div
+                    class="relative mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+                    :class="item.isUnread ? 'bg-brand-muted' : 'bg-muted'"
+                  >
+                    <FileText
+                      v-if="item.type === 'report'"
+                      :size="14"
+                      :stroke-width="1.75"
+                      :class="item.isUnread ? 'text-brand' : 'text-muted-foreground'"
+                    />
+                    <BookOpen
+                      v-else
+                      :size="14"
+                      :stroke-width="1.75"
+                      :class="item.isUnread ? 'text-brand' : 'text-muted-foreground'"
+                    />
+                    <span
+                      v-if="item.isUnread"
+                      class="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-gain ring-1 ring-card"
+                    />
                   </div>
                   <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span class="truncate text-sm" :class="item.isUnread ? 'font-semibold text-foreground' : 'text-muted-foreground'">
+                    <span
+                      class="truncate text-sm"
+                      :class="item.isUnread ? 'font-semibold text-foreground' : 'text-muted-foreground'"
+                    >
                       {{ item.title }}
                     </span>
                     <span class="text-[11px] text-muted-foreground/70">{{ item.date }}</span>
@@ -148,8 +180,13 @@ function navigateToItem(item: NotificationItem): void {
                 </DropdownMenuItem>
               </template>
 
-              <div v-else class="flex items-center justify-center px-4 py-6">
-                <p class="text-xs text-muted-foreground">暫無通知</p>
+              <div
+                v-else
+                class="flex items-center justify-center px-4 py-6"
+              >
+                <p class="text-xs text-muted-foreground">
+                  暫無通知
+                </p>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -158,29 +195,51 @@ function navigateToItem(item: NotificationItem): void {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar class="h-10 w-10 cursor-pointer rounded-full shadow-(--shadow-soft) ring-0 transition-all duration-300 hover:shadow-(--shadow-card)">
-                <AvatarImage v-if="profile?.pictureUrl" :src="profile.pictureUrl" :alt="profile.displayName" class="rounded-full" />
-                <AvatarFallback class="rounded-full bg-brand/10 text-xs font-bold text-brand">{{ initials }}</AvatarFallback>
+                <AvatarImage
+                  v-if="profile?.pictureUrl"
+                  :src="profile.pictureUrl"
+                  :alt="profile.displayName"
+                  class="rounded-full"
+                />
+                <AvatarFallback class="rounded-full bg-brand/10 text-xs font-bold text-brand">
+                  {{ initials }}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold text-foreground">{{ profile?.displayName ?? '使用者' }}</span>
-                  <span v-if="profile?.statusMessage" class="text-xs text-muted-foreground">{{ profile.statusMessage }}</span>
+                  <span
+                    v-if="profile?.statusMessage"
+                    class="text-xs text-muted-foreground"
+                  >{{ profile.statusMessage }}</span>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem @select="navigateToSettings">
-                <Settings :size="16" :stroke-width="1.75" />
+                <Settings
+                  :size="16"
+                  :stroke-width="1.75"
+                />
                 <span>個人設定</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <User :size="16" :stroke-width="1.75" />
+                <User
+                  :size="16"
+                  :stroke-width="1.75"
+                />
                 <span>個人資料</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem :destructive="true" @select="handleLogout">
-                <LogOut :size="16" :stroke-width="1.75" />
+              <DropdownMenuItem
+                :destructive="true"
+                @select="handleLogout"
+              >
+                <LogOut
+                  :size="16"
+                  :stroke-width="1.75"
+                />
                 <span>登出</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -193,7 +252,10 @@ function navigateToItem(item: NotificationItem): void {
           class="flex items-center gap-1.5 rounded-full bg-[#06C755] px-4 py-2 text-sm font-medium text-white shadow-(--shadow-soft) transition-all duration-300 hover:brightness-110 hover:shadow-(--shadow-card)"
           @click="login"
         >
-          <LogIn :size="16" :stroke-width="2" />
+          <LogIn
+            :size="16"
+            :stroke-width="2"
+          />
           <span>LINE 登入</span>
         </button>
       </div>

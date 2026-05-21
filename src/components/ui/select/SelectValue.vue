@@ -10,6 +10,9 @@ defineProps<{
 
 <template>
   <slot>
-    <span v-if="placeholder" class="text-muted-foreground">{{ placeholder }}</span>
+    <span
+      v-if="placeholder"
+      class="text-muted-foreground"
+    >{{ placeholder }}</span>
   </slot>
 </template>

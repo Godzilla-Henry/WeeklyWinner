@@ -8,13 +8,13 @@ import { TooltipComponent, GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { BarDataItem } from '@/types/module/records';
 
+const props = defineProps<Props>();
+
 use([BarChart, TooltipComponent, GridComponent, CanvasRenderer]);
 
 interface Props {
   data: BarDataItem[];
 }
-
-const props = defineProps<Props>();
 
 const option = computed((): EChartsOption => ({
   tooltip: {
@@ -84,6 +84,10 @@ const option = computed((): EChartsOption => ({
 
 <template>
   <div class="h-64 w-full">
-    <VChart :option="option" autoresize class="h-full w-full" />
+    <VChart
+      :option="option"
+      autoresize
+      class="h-full w-full"
+    />
   </div>
 </template>

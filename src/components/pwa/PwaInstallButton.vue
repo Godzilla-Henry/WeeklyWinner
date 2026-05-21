@@ -249,7 +249,9 @@ onBeforeUnmount(() => {
       >
         <div class="mx-4 mb-6 w-full max-w-sm rounded-3xl bg-card p-6 shadow-float">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-foreground">新增至主畫面</h3>
+            <h3 class="text-lg font-semibold text-foreground">
+              新增至主畫面
+            </h3>
             <button
               class="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground"
               aria-label="關閉"
@@ -302,7 +304,9 @@ onBeforeUnmount(() => {
       >
         <div class="mx-4 mb-6 w-full max-w-sm rounded-3xl bg-card p-6 shadow-float">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-foreground">安裝 App 至主畫面</h3>
+            <h3 class="text-lg font-semibold text-foreground">
+              安裝 App 至主畫面
+            </h3>
             <button
               class="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground"
               aria-label="關閉"
@@ -359,7 +363,9 @@ onBeforeUnmount(() => {
       >
         <div class="mx-4 mb-6 w-full max-w-sm rounded-3xl bg-card p-6 shadow-float">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-foreground">安裝 App</h3>
+            <h3 class="text-lg font-semibold text-foreground">
+              安裝 App
+            </h3>
             <button
               class="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground"
               aria-label="關閉"

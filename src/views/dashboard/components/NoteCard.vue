@@ -75,13 +75,20 @@ function navigateToNote(): void {
         <div class="flex min-w-0 flex-1 flex-col gap-1">
           <p class="text-[15px] font-semibold leading-snug text-foreground">
             {{ props.note.title }}
-            <Badge v-if="props.isUnread" variant="gain" class="px-1.5 py-0 text-[10px]">
+            <Badge
+              v-if="props.isUnread"
+              variant="gain"
+              class="px-1.5 py-0 text-[10px]"
+            >
               NEW
             </Badge>
           </p>
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs text-muted-foreground">{{ props.note.publishDate }}</span>
-            <Badge :class="categoryBadgeClass[props.note.category]" class="text-[10px]">
+            <Badge
+              :class="categoryBadgeClass[props.note.category]"
+              class="text-[10px]"
+            >
               {{ noteCategoryLabel[props.note.category] }}
             </Badge>
           </div>

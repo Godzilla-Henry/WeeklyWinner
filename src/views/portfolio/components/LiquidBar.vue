@@ -1,3 +1,20 @@
+<script setup lang="ts">
+/** 流體比例長條圖 — 極度圓潤的膠囊造型 */
+
+interface BarSegment {
+  symbol: string;
+  name: string;
+  weight: number;
+  color: string;
+}
+
+interface Props {
+  segments: BarSegment[];
+}
+
+const props = defineProps<Props>();
+</script>
+
 <template>
   <div>
     <!-- 膠囊長條 -->
@@ -18,27 +35,13 @@
         :key="seg.symbol"
         class="flex items-center gap-1.5 rounded-pill bg-brand-muted px-3 py-1 text-xs font-medium text-foreground transition-all duration-300 hover:bg-brand/10 hover:scale-105"
       >
-        <span :class="seg.color" class="inline-block h-2 w-2 rounded-full shadow-sm" />
+        <span
+          :class="seg.color"
+          class="inline-block h-2 w-2 rounded-full shadow-sm"
+        />
         <span>{{ seg.name }}</span>
         <span class="text-muted-foreground">{{ seg.weight }}%</span>
       </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-/** 流體比例長條圖 — 極度圓潤的膠囊造型 */
-
-interface BarSegment {
-  symbol: string;
-  name: string;
-  weight: number;
-  color: string;
-}
-
-interface Props {
-  segments: BarSegment[];
-}
-
-const props = defineProps<Props>();
-</script>

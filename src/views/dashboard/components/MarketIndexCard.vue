@@ -56,8 +56,18 @@ function fmtPercent(value: number | undefined): string {
             class="flex h-7 w-7 items-center justify-center rounded-lg"
             :class="isPositive ? 'bg-gain/8' : 'bg-loss/8'"
           >
-            <TrendingUp v-if="isPositive" :size="14" :stroke-width="2" class="text-gain" />
-            <TrendingDown v-else :size="14" :stroke-width="2" class="text-loss" />
+            <TrendingUp
+              v-if="isPositive"
+              :size="14"
+              :stroke-width="2"
+              class="text-gain"
+            />
+            <TrendingDown
+              v-else
+              :size="14"
+              :stroke-width="2"
+              class="text-loss"
+            />
           </div>
         </div>
 
@@ -84,8 +94,16 @@ function fmtPercent(value: number | undefined): string {
             </span>
           </div>
           <div class="flex items-center gap-1.5">
-            <Loader2 v-if="props.loading" :size="10" :stroke-width="2" class="animate-spin text-muted-foreground/50" />
-            <span v-if="props.data?.updatedAt" class="text-[10px] tabular-nums text-muted-foreground/60">
+            <Loader2
+              v-if="props.loading"
+              :size="10"
+              :stroke-width="2"
+              class="animate-spin text-muted-foreground/50"
+            />
+            <span
+              v-if="props.data?.updatedAt"
+              class="text-[10px] tabular-nums text-muted-foreground/60"
+            >
               {{ props.data.updatedAt }}
             </span>
           </div>

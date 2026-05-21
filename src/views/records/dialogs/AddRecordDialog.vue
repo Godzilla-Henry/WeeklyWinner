@@ -70,14 +70,22 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
 </script>
 
 <template>
-  <Dialog :open="open" @update:open="emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="emit('update:open', $event)"
+  >
     <DialogContent class="max-w-md">
       <DialogHeader class="p-6">
         <DialogTitle>新增收益記錄</DialogTitle>
-        <DialogDescription class="text-xs">記錄每月個股損益，追蹤投資績效</DialogDescription>
+        <DialogDescription class="text-xs">
+          記錄每月個股損益，追蹤投資績效
+        </DialogDescription>
       </DialogHeader>
 
-      <form class="flex flex-col gap-4 px-6 pb-6" @submit.prevent="handleSubmit">
+      <form
+        class="flex flex-col gap-4 px-6 pb-6"
+        @submit.prevent="handleSubmit"
+      >
         <!-- 年份 / 月份 -->
         <div class="grid grid-cols-2 gap-3">
           <label class="flex flex-col gap-1.5">
@@ -88,7 +96,7 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
               min="2020"
               max="2030"
               class="rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-            />
+            >
           </label>
           <label class="flex flex-col gap-1.5">
             <span class="text-xs font-medium text-muted-foreground">月份</span>
@@ -97,7 +105,11 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
                 <SelectValue>{{ form.month }} 月</SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="m in months" :key="m" :value="String(m)">
+                <SelectItem
+                  v-for="m in months"
+                  :key="m"
+                  :value="String(m)"
+                >
                   {{ m }} 月
                 </SelectItem>
               </SelectContent>
@@ -119,7 +131,7 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
             type="number"
             placeholder="正數為獲利，負數為虧損"
             class="rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-          />
+          >
         </label>
 
         <!-- 備註 -->
@@ -130,7 +142,7 @@ const months = Array.from({ length: 12 }, (_, i) => i + 1);
             type="text"
             placeholder="選填，例：獲利了結。"
             class="rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-          />
+          >
         </label>
 
         <!-- 送出按鈕 -->

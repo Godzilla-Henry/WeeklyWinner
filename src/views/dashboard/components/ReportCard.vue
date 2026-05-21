@@ -31,7 +31,11 @@ function navigateToReport(): void {
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-muted">
-            <Calendar :size="18" :stroke-width="1.75" class="text-brand" />
+            <Calendar
+              :size="18"
+              :stroke-width="1.75"
+              class="text-brand"
+            />
             <!-- 未讀紅點 -->
             <span
               v-if="props.isUnread"
@@ -40,12 +44,20 @@ function navigateToReport(): void {
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <CardTitle class="text-[15px]">{{ props.report.title }}</CardTitle>
-              <Badge v-if="props.isUnread" variant="gain" class="text-[10px] px-1.5 py-0">
+              <CardTitle class="text-[15px]">
+                {{ props.report.title }}
+              </CardTitle>
+              <Badge
+                v-if="props.isUnread"
+                variant="gain"
+                class="text-[10px] px-1.5 py-0"
+              >
                 NEW
               </Badge>
             </div>
-            <p class="mt-0.5 text-xs text-muted-foreground">{{ props.report.date }}</p>
+            <p class="mt-0.5 text-xs text-muted-foreground">
+              {{ props.report.date }}
+            </p>
           </div>
         </div>
         <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary transition-all duration-300 group-hover:bg-brand/10">

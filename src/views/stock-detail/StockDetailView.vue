@@ -43,11 +43,18 @@ const fundamentals: QuoteField[] = [
 <template>
   <DefaultLayout>
     <template #header>
-      <p class="text-sm text-muted-foreground">{{ symbol }}</p>
-      <h1 class="text-2xl font-bold text-foreground">{{ quote.name }}</h1>
+      <p class="text-sm text-muted-foreground">
+        {{ symbol }}
+      </p>
+      <h1 class="text-2xl font-bold text-foreground">
+        {{ quote.name }}
+      </h1>
       <div class="mt-1 flex items-baseline gap-3">
         <span class="text-3xl font-bold text-foreground">{{ quote.close }}</span>
-        <Badge :variant="quote.change >= 0 ? 'gain' : 'loss'" class="text-sm">
+        <Badge
+          :variant="quote.change >= 0 ? 'gain' : 'loss'"
+          class="text-sm"
+        >
           {{ quote.change >= 0 ? '+' : '' }}{{ quote.change }}
           ({{ quote.changePercent >= 0 ? '+' : '' }}{{ quote.changePercent.toFixed(2) }}%)
         </Badge>
@@ -58,8 +65,14 @@ const fundamentals: QuoteField[] = [
     <Card class="border-dashed">
       <CardContent class="flex h-52 items-center justify-center p-6">
         <div class="text-center">
-          <CandlestickChart :size="40" :stroke-width="1.5" class="mx-auto text-muted-foreground/50" />
-          <p class="mt-2 text-sm text-muted-foreground">K 線圖區域（預留 ECharts / TradingView）</p>
+          <CandlestickChart
+            :size="40"
+            :stroke-width="1.5"
+            class="mx-auto text-muted-foreground/50"
+          />
+          <p class="mt-2 text-sm text-muted-foreground">
+            K 線圖區域（預留 ECharts / TradingView）
+          </p>
         </div>
       </CardContent>
     </Card>
@@ -72,9 +85,17 @@ const fundamentals: QuoteField[] = [
       <CardContent>
         <Table>
           <TableBody>
-            <TableRow v-for="f in quoteFields" :key="f.label">
-              <TableCell class="text-muted-foreground">{{ f.label }}</TableCell>
-              <TableCell class="text-right font-medium" :class="f.highlight ? 'text-brand' : 'text-foreground'">
+            <TableRow
+              v-for="f in quoteFields"
+              :key="f.label"
+            >
+              <TableCell class="text-muted-foreground">
+                {{ f.label }}
+              </TableCell>
+              <TableCell
+                class="text-right font-medium"
+                :class="f.highlight ? 'text-brand' : 'text-foreground'"
+              >
                 {{ f.value }}
               </TableCell>
             </TableRow>
@@ -89,12 +110,22 @@ const fundamentals: QuoteField[] = [
         <CardTitle>公司資訊</CardTitle>
       </CardHeader>
       <CardContent>
-        <p class="mb-4 text-sm leading-relaxed text-muted-foreground">{{ company.description }}</p>
+        <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
+          {{ company.description }}
+        </p>
         <Table>
           <TableBody>
-            <TableRow v-for="f in fundamentals" :key="f.label">
-              <TableCell class="text-muted-foreground">{{ f.label }}</TableCell>
-              <TableCell class="text-right font-medium" :class="f.highlight ? 'text-brand' : 'text-foreground'">
+            <TableRow
+              v-for="f in fundamentals"
+              :key="f.label"
+            >
+              <TableCell class="text-muted-foreground">
+                {{ f.label }}
+              </TableCell>
+              <TableCell
+                class="text-right font-medium"
+                :class="f.highlight ? 'text-brand' : 'text-foreground'"
+              >
                 {{ f.value }}
               </TableCell>
             </TableRow>

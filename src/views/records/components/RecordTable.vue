@@ -27,14 +27,23 @@ function formatCurrency(value: number): string {
     <Table>
       <TableHeader>
         <TableRow class="border-b border-border bg-muted/30">
-          <TableHead class="w-[120px] px-4 text-left text-xs font-semibold">股票名稱</TableHead>
-          <TableHead class="px-4 text-center text-xs font-semibold">損益金額</TableHead>
-          <TableHead class="px-4 text-center text-xs font-semibold">備註</TableHead>
+          <TableHead class="w-[120px] px-4 text-left text-xs font-semibold">
+            股票名稱
+          </TableHead>
+          <TableHead class="px-4 text-center text-xs font-semibold">
+            損益金額
+          </TableHead>
+          <TableHead class="px-4 text-center text-xs font-semibold">
+            備註
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow v-if="records.length === 0">
-          <TableCell colspan="3" class="py-10 text-center text-sm text-muted-foreground">
+          <TableCell
+            colspan="3"
+            class="py-10 text-center text-sm text-muted-foreground"
+          >
             尚無紀錄
           </TableCell>
         </TableRow>
@@ -47,7 +56,10 @@ function formatCurrency(value: number): string {
             {{ record.stockName }}
           </TableCell>
           <TableCell class="px-4 text-center">
-            <Badge :variant="record.profitLoss >= 0 ? 'gain' : 'loss'" class="font-mono text-xs">
+            <Badge
+              :variant="record.profitLoss >= 0 ? 'gain' : 'loss'"
+              class="font-mono text-xs"
+            >
               {{ formatCurrency(record.profitLoss) }}
             </Badge>
           </TableCell>

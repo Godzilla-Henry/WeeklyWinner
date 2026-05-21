@@ -1,7 +1,7 @@
 # Weekly Winner
 
-> **版本：** `v1.0.0`
-> **最後更新：** 2026-05-19
+> **版本：** `v1.0.1`
+> **最後更新：** 2026-05-21
 > **適用技術棧：** Vue 3 + TypeScript 5 + Vite 6 + Pinia + TanStack Query + Tailwind CSS 4 + shadcn-vue + LINE LIFF SDK
 
 ---
@@ -19,7 +19,7 @@
 | Styling | Tailwind CSS 4（`@tailwindcss/vite`）+ shadcn-vue（CSS Variables） |
 | UI | shadcn-vue（Card, Table, Badge, Tabs, Dialog, Separator, Avatar, Skeleton, DropdownMenu, Select） |
 | Icons | Lucide Vue Next |
-| Charts | vue-echarts + ECharts 5（圓餅圖、長條圖） |
+| Charts | vue-echarts + ECharts 6（圓餅圖、長條圖） |
 | HTTP | Native `fetch` 封裝（`src/api/http.ts`，認證自動帶入 idToken） |
 | Backend | [Render](https://weeklywinnerbackend.onrender.com)（Node.js） |
 | Auth | LINE LIFF SDK `@line/liff` |
@@ -51,17 +51,17 @@ pnpm build
 ```
 src/
 ├── api/                        # HTTP 請求層（按領域分檔）
-│   ├── http.ts                 #   fetch 封裝（認證請求，Bearer idToken）
-│   ├── publicHttp.ts           #   fetch 封裝（公開 API，無 Auth）
+│   ├── http.ts                 #   fetch 封裝（認證 + 公開請求，Bearer accessToken）
 │   ├── queryKeys.ts            #   TanStack Query Key 工廠
 │   ├── index.ts                #   統一匯出
 │   └── modules/
 │       ├── auth.ts             #   認證 API（login）
-│       ├── report.ts           #   週報 API（list / detail）
+│       ├── investNote.ts       #   投資記事 API（list / detail）
 │       ├── profitRecords.ts    #   收益記錄 API（CRUD）
-│       ├── yearlyGoals.ts      #   年度目標 API（get / upsert）
+│       ├── report.ts           #   週報 API（list / detail）
 │       ├── stock.ts            #   台股加權指數 API（證交所 FMTQIK）
-│       └── unread.ts           #   未讀數量 API（counts / mark-as-read）
+│       ├── unread.ts           #   未讀數量 API（counts / mark-as-read）
+│       └── yearlyGoals.ts      #   年度目標 API（get / upsert）
 ├── assets/
 │   ├── img/                    # 靜態圖片（Logo SVG…）
 │   └── styles/
@@ -72,6 +72,8 @@ src/
 │   │   ├── ComingSoon.vue      #   開發中功能遮罩頁
 │   │   ├── DefaultLayout.vue   #   統一頁面佈局
 │   │   └── TheHeader.vue       #   頂部導航（Logo + 通知 + LIFF 頭像）
+│   ├── pwa/                    # PWA 相關元件
+│   │   └── PwaInstallButton.vue #   懸浮安裝按鈕（可拖曳 + 左右吸附）
 │   └── ui/                     # shadcn-vue 元件
 │       ├── avatar/
 │       ├── badge/
@@ -85,20 +87,26 @@ src/
 │       └── tabs/
 ├── composables/                # 組合式函式
 │   ├── shared/                 #   共用 API 工具
-│   │   └── useLiffToken.ts     #     LINE ID Token 取得
+│   │   ├── useLiffToken.ts     #     LINE Access Token 取得
+│   │   └── usePwaAuthBridge.ts #     PWA ↔ 瀏覽器登入橋接（BroadcastChannel）
 │   ├── module/                 #   功能模組 TanStack Query Composables
 │   │   ├── useAuthQuery.ts     #     登入同步 Mutation
+│   │   ├── useInvestNoteQuery.ts #   投資記事 Query
 │   │   ├── useMarketIndex.ts   #     加權指數 Query
 │   │   ├── useProfitRecordsQuery.ts #  收益記錄 Query + Mutations
-│   │   ├── useYearlyGoalsQuery.ts   #  年度目標 Query + Mutation
 │   │   ├── useRecordsData.ts   #     收益記錄頁面資料整合 Composable
 │   │   ├── useReportQuery.ts   #     週報列表 / 詳情 Query
-│   │   └── useUnreadQuery.ts   #     未讀數量 Query + 標記已讀 Mutation
+│   │   ├── useStockSearch.ts   #     股票模糊搜尋（代碼 / 名稱）
+│   │   ├── useUnreadQuery.ts   #     未讀數量 Query + 標記已讀 Mutation
+│   │   └── useYearlyGoalsQuery.ts   #  年度目標 Query + Mutation
 │   ├── useLiff.ts              #   LINE LIFF SDK 封裝（單例模式）
 │   ├── useMockData.ts          #   Mock 資料（開發用）
-│   └── useMockPortfolio.ts     #   Mock 資產資料（開發用）
+│   ├── useMockPortfolio.ts     #   Mock 資產資料（開發用）
+│   └── useMockRecords.ts       #   Mock 收益記錄（開發用）
 ├── constants/
 │   └── index.ts                # LIFF_ID, APP_NAME 等常數
+├── data/
+│   └── twStocks.ts             # 台股靜態清單（400+ 檔，供 Autocomplete 搜尋）
 ├── lib/
 │   └── utils.ts                # cn() 工具函式
 ├── plugins/
@@ -129,10 +137,16 @@ src/
 │   ├── dashboard/
 │   │   ├── DashboardView.vue
 │   │   ├── types.ts
-│   │   └── components/
-│   │       ├── MarketIndexCard.vue
-│   │       ├── NoteCard.vue
-│   │       └── ReportCard.vue
+│   │   ├── components/
+│   │   │   ├── MarketIndexCard.vue
+│   │   │   ├── NoteCard.vue
+│   │   │   └── ReportCard.vue
+│   │   └── dialogs/
+│   ├── invest-note/
+│   │   ├── InvestNoteView.vue
+│   │   ├── types.ts
+│   │   ├── components/
+│   │   └── dialogs/
 │   ├── portfolio/
 │   │   ├── PortfolioView.vue
 │   │   └── components/
@@ -145,18 +159,24 @@ src/
 │   │   │   ├── GoalProgressCard.vue
 │   │   │   ├── MonthPieChart.vue
 │   │   │   ├── RecordTable.vue
+│   │   │   ├── StockAutocomplete.vue
 │   │   │   └── YearBarChart.vue
 │   │   └── dialogs/
 │   │       └── AddRecordDialog.vue
 │   ├── settings/
-│   │   └── SettingsView.vue
+│   │   ├── SettingsView.vue
+│   │   ├── components/
+│   │   └── dialogs/
 │   ├── stock-detail/
-│   │   └── StockDetailView.vue
+│   │   ├── StockDetailView.vue
+│   │   ├── components/
+│   │   └── dialogs/
 │   └── weekly-report/
 │       ├── WeeklyReportView.vue
 │       ├── types.ts
-│       └── components/
-│           └── SelectionTable.vue
+│       ├── components/
+│       │   └── SelectionTable.vue
+│       └── dialogs/
 ├── App.vue
 └── main.ts
 ```
@@ -174,7 +194,7 @@ composables/module/useReportQuery.ts
   ↓ 呼叫 API 函式
 api/modules/report.ts
   ↓ 經由 HTTP 封裝
-api/http.ts（publicHttp 公開 / http 認證）
+api/http.ts（統一封裝，認證 API 自動帶入 Bearer token）
   ↓
 後端 API（https://weeklywinnerbackend.onrender.com）
 ```
@@ -190,8 +210,8 @@ api/http.ts（publicHttp 公開 / http 認證）
 
 | 類型 | 說明 | 使用方式 |
 | --- | --- | --- |
-| 公開 API | 不需登入（週報列表、週報詳情） | `publicHttp.get()` |
-| 認證 API | 需 LINE idToken（登入、未讀、標記已讀） | `http.get()` / `http.post()`，自動帶入 Bearer token |
+| 公開 API | 不需登入（週報列表、週報詳情） | `http.get()`（不帶 token） |
+| 認證 API | 需 LINE accessToken（登入、未讀、標記已讀、收益記錄） | `http.get()` / `http.post()`，自動帶入 Bearer token |
 
 ### 錯誤處理
 
@@ -208,6 +228,7 @@ api/http.ts（publicHttp 公開 / http 認證）
 | --- | --- | --- |
 | 認證 | `api/modules/auth.ts` | `POST /api/auth/login` |
 | 週報 | `api/modules/report.ts` | `GET /api/reports`, `GET /api/reports/:id` |
+| 投資記事 | `api/modules/investNote.ts` | `GET /api/invest-notes`, `GET /api/invest-notes/:id` |
 | 未讀 | `api/modules/unread.ts` | `GET /api/unread-count`, `POST /api/mark-as-read` |
 | 台股指數 | `api/modules/stock.ts` | 證交所 FMTQIK（公開 API） |
 | 收益記錄 | `api/modules/profitRecords.ts` | `GET/POST /api/profit-records`, `PUT/DELETE /api/profit-records/:id` |
@@ -219,6 +240,8 @@ api/http.ts（publicHttp 公開 / http 認證）
 | --- | --- | --- |
 | `useReportsQuery` | 週報列表 | `['reports', 'list', { page, limit }]` |
 | `useReportDetailQuery` | 週報詳情 | `['reports', 'detail', id]` |
+| `useInvestNotesQuery` | 投資記事列表 | `['investNotes', 'list']` |
+| `useInvestNoteDetailQuery` | 投資記事詳情 | `['investNotes', 'detail', id]` |
 | `useUnreadCountsQuery` | 未讀數量彙總 | `['unread', 'counts']` |
 | `useUnreadCountQuery` | 指定類型未讀 | `['unread', contentType]` |
 | `useMarkAsReadMutation` | 標記已讀 | 自動 invalidate `['unread']` |
@@ -229,6 +252,7 @@ api/http.ts（publicHttp 公開 / http 認證）
 | `useDeleteProfitRecord` | 刪除收益記錄 | 自動 invalidate `['profitRecords']` |
 | `useYearlyGoalsQuery` | 年度目標 | `['yearlyGoals', year]` |
 | `useUpsertYearlyGoal` | 設定年度目標 | 自動 invalidate `['yearlyGoals']` |
+| `useStockSearch` | 股票模糊搜尋 | 本地靜態資料（無 API） |
 
 ### snake_case → camelCase 轉換
 
@@ -412,3 +436,4 @@ GET /exchangeReport/FMTQIK?response=json&date={yyyyMMdd}
 | `v0.0.25` | 2026-05-19 | **PWA 登入循環修正**：修正 PWA standalone 模式下 LINE OAuth redirect 跳出 App 造成登入循環（redirectUri 改用 origin 根路徑）、LINE 瀏覽器導引改為一鍵複製網址引導至 Safari 安裝、Service Worker 限正式環境（HTTPS）才註冊 |
 | `v0.0.26` | 2026-05-19 | **PWA 登入狀態同步**：實作 BroadcastChannel 橋接機制（usePwaAuthBridge）、系統瀏覽器完成 LINE OAuth 後廣播 TOKEN_READY 通知 PWA 視窗重新 init LIFF、新增 resetLiffInitPromise 重置單例鎖、http.ts 統一使用 isStandaloneMode 工具函式 |
 | `v1.0.0` | 2026-05-19 | **正式版本發布**：完整 PWA 支援（manifest + Service Worker + 懸浮安裝按鈕）、LINE LIFF 登入整合、BroadcastChannel 跨環境登入橋接、收益記錄 / 年度目標 / 圓餅圖 / 長條圖、選股週報 / 投資記事、台股加權指數即時 API |
+| `v1.0.1` | 2026-05-21 | **README 同步更新**：目錄樹反映實際檔案結構（新增 pwa/、data/、invest-note/ 等）、移除已廢棄的 publicHttp 描述、新增投資記事 API 模組文件、ECharts 版本修正為 v6 |

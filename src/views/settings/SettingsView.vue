@@ -40,11 +40,22 @@ const sections: SettingSection[] = [
 </script>
 
 <template>
-  <DefaultLayout title="個人設定" subtitle="管理您的帳戶與偏好">
-    <Card v-for="section in sections" :key="section.title">
+  <DefaultLayout
+    title="個人設定"
+    subtitle="管理您的帳戶與偏好"
+  >
+    <Card
+      v-for="section in sections"
+      :key="section.title"
+    >
       <CardHeader>
         <div class="flex items-center gap-2.5">
-          <component :is="section.icon" :size="20" :stroke-width="1.75" class="text-brand" />
+          <component
+            :is="section.icon"
+            :size="20"
+            :stroke-width="1.75"
+            class="text-brand"
+          />
           <CardTitle>{{ section.title }}</CardTitle>
         </div>
         <CardDescription>{{ section.description }}</CardDescription>
@@ -57,7 +68,10 @@ const sections: SettingSection[] = [
             class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-foreground transition hover:bg-accent"
           >
             <span>{{ item }}</span>
-            <ChevronRight :size="16" class="text-muted-foreground" />
+            <ChevronRight
+              :size="16"
+              class="text-muted-foreground"
+            />
           </button>
         </div>
       </CardContent>

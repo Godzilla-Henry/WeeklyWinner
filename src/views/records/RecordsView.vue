@@ -66,14 +66,23 @@ function formatTotal(value: number): string {
 </script>
 
 <template>
-  <DefaultLayout title="收益記錄總覽" subtitle="追蹤每月投資損益與績效分析">
+  <DefaultLayout
+    title="收益記錄總覽"
+    subtitle="追蹤每月投資損益與績效分析"
+  >
     <!-- Header 操作列 -->
     <section class="flex flex-wrap items-center justify-between gap-2">
       <div class="flex min-w-0 flex-wrap items-center gap-2">
-        <Badge variant="outline" class="shrink-0 border-brand bg-white text-xs font-semibold text-foreground shadow-sm">
+        <Badge
+          variant="outline"
+          class="shrink-0 border-brand bg-white text-xs font-semibold text-foreground shadow-sm"
+        >
           年度 {{ formatTotal(yearTotal) }}
         </Badge>
-        <Badge :variant="monthTotal >= 0 ? 'gain' : 'loss'" class="shrink-0 text-xs">
+        <Badge
+          :variant="monthTotal >= 0 ? 'gain' : 'loss'"
+          class="shrink-0 text-xs"
+        >
           當月 {{ formatTotal(monthTotal) }}
         </Badge>
       </div>
@@ -81,7 +90,10 @@ function formatTotal(value: number): string {
         class="flex shrink-0 items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-xs font-medium text-brand-foreground transition hover:opacity-90"
         @click="dialogOpen = true"
       >
-        <Plus :size="14" :stroke-width="2" />
+        <Plus
+          :size="14"
+          :stroke-width="2"
+        />
         <span>新增記錄</span>
       </button>
     </section>
@@ -104,7 +116,11 @@ function formatTotal(value: number): string {
             <SelectValue>{{ selectedYear }}</SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem v-for="y in availableYears" :key="y" :value="String(y)">
+            <SelectItem
+              v-for="y in availableYears"
+              :key="y"
+              :value="String(y)"
+            >
               {{ y }}
             </SelectItem>
           </SelectContent>
@@ -117,7 +133,11 @@ function formatTotal(value: number): string {
             <SelectValue>{{ selectedMonth }} 月</SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem v-for="m in months" :key="m" :value="String(m)">
+            <SelectItem
+              v-for="m in months"
+              :key="m"
+              :value="String(m)"
+            >
               {{ m }} 月
             </SelectItem>
           </SelectContent>
@@ -129,10 +149,17 @@ function formatTotal(value: number): string {
     <section>
       <Card>
         <CardContent class="p-4">
-          <Tabs v-model="chartTab" class="w-full">
+          <Tabs
+            v-model="chartTab"
+            class="w-full"
+          >
             <TabsList class="mb-4 grid w-full grid-cols-2">
-              <TabsTrigger value="pie">月份佔比</TabsTrigger>
-              <TabsTrigger value="bar">年度走勢</TabsTrigger>
+              <TabsTrigger value="pie">
+                月份佔比
+              </TabsTrigger>
+              <TabsTrigger value="bar">
+                年度走勢
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="pie">
               <template v-if="isLoading">
@@ -140,15 +167,26 @@ function formatTotal(value: number): string {
                   <Skeleton class="h-48 w-48 rounded-full" />
                 </div>
               </template>
-              <MonthPieChart v-else :data="pieData" />
+              <MonthPieChart
+                v-else
+                :data="pieData"
+              />
             </TabsContent>
             <TabsContent value="bar">
               <template v-if="isLoading">
                 <div class="flex h-64 items-end justify-between gap-2 px-4">
-                  <Skeleton v-for="i in 12" :key="i" class="w-full" :style="{ height: `${Math.random() * 60 + 20}%` }" />
+                  <Skeleton
+                    v-for="i in 12"
+                    :key="i"
+                    class="w-full"
+                    :style="{ height: `${Math.random() * 60 + 20}%` }"
+                  />
                 </div>
               </template>
-              <YearBarChart v-else :data="barData" />
+              <YearBarChart
+                v-else
+                :data="barData"
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -162,10 +200,17 @@ function formatTotal(value: number): string {
       </h3>
       <template v-if="isLoading">
         <div class="flex flex-col gap-2">
-          <Skeleton v-for="i in 3" :key="i" class="h-12 w-full rounded-lg" />
+          <Skeleton
+            v-for="i in 3"
+            :key="i"
+            class="h-12 w-full rounded-lg"
+          />
         </div>
       </template>
-      <RecordTable v-else :records="filteredRecords" />
+      <RecordTable
+        v-else
+        :records="filteredRecords"
+      />
     </section>
 
     <!-- 新增記錄 Dialog -->

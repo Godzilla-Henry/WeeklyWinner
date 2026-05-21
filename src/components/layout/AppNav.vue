@@ -44,7 +44,11 @@ const currentPath = computed((): string => route.path);
         :tabindex="item.disabled ? -1 : 0"
         :aria-disabled="item.disabled"
       >
-        <component :is="item.icon" :size="22" :stroke-width="1.75" />
+        <component
+          :is="item.icon"
+          :size="22"
+          :stroke-width="1.75"
+        />
       </RouterLink>
     </nav>
   </div>

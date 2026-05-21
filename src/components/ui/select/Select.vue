@@ -46,7 +46,10 @@ provide(SELECT_INJECTION_KEY, context);
 </script>
 
 <template>
-  <div class="relative inline-block" data-select-root>
+  <div
+    class="relative inline-block"
+    data-select-root
+  >
     <slot />
   </div>
 </template>

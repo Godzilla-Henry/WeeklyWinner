@@ -8,13 +8,13 @@ import { TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { PieDataItem } from '@/types/module/records';
 
+const props = defineProps<Props>();
+
 use([PieChart, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 interface Props {
   data: PieDataItem[];
 }
-
-const props = defineProps<Props>();
 
 /**
  * 色盤 — 柔和暖色系，各項目明確區分
@@ -198,13 +198,21 @@ const option = computed((): EChartsOption => {
 </script>
 
 <template>
-  <div ref="containerRef" class="flex h-80 w-full items-center justify-center">
+  <div
+    ref="containerRef"
+    class="flex h-80 w-full items-center justify-center"
+  >
     <VChart
       v-if="data.length > 0"
       :option="option"
       autoresize
       class="h-full w-full"
     />
-    <p v-else class="text-sm text-muted-foreground">當月無獲利紀錄</p>
+    <p
+      v-else
+      class="text-sm text-muted-foreground"
+    >
+      當月無獲利紀錄
+    </p>
   </div>
 </template>

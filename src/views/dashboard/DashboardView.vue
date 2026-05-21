@@ -61,44 +61,80 @@ const noteReadIds = computed((): string[] => noteReadStatus.value?.readIds ?? []
 </script>
 
 <template>
-  <DefaultLayout title="市場行情" subtitle="當前股市即時行情">
+  <DefaultLayout
+    title="市場行情"
+    subtitle="當前股市即時行情"
+  >
     <!-- 加權指數 -->
     <section class="flex flex-col gap-3">
-      <div v-if="error" class="flex items-center justify-between rounded-xl bg-brand-muted px-4 py-2">
-        <p class="text-xs text-muted-foreground">指數載入失敗：{{ error.message }}</p>
+      <div
+        v-if="error"
+        class="flex items-center justify-between rounded-xl bg-brand-muted px-4 py-2"
+      >
+        <p class="text-xs text-muted-foreground">
+          指數載入失敗：{{ error.message }}
+        </p>
         <button
           class="flex items-center gap-1 text-xs font-medium text-brand transition hover:opacity-80"
           :disabled="loading"
           @click="refresh"
         >
-          <RefreshCw :size="12" :stroke-width="2" :class="loading ? 'animate-spin' : ''" />
+          <RefreshCw
+            :size="12"
+            :stroke-width="2"
+            :class="loading ? 'animate-spin' : ''"
+          />
           <span>重試</span>
         </button>
       </div>
-      <MarketIndexCard :data="index ?? null" :loading="loading" />
+      <MarketIndexCard
+        :data="index ?? null"
+        :loading="loading"
+      />
     </section>
 
     <!-- Tab 區域 -->
-    <Tabs :model-value="activeTab" @update:model-value="activeTab = $event as TabValue">
+    <Tabs
+      :model-value="activeTab"
+      @update:model-value="activeTab = $event as TabValue"
+    >
       <TabsList>
-        <TabsTrigger value="reports" class="relative">
+        <TabsTrigger
+          value="reports"
+          class="relative"
+        >
           選股週報
-          <span v-if="reportUnread > 0" class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground">
+          <span
+            v-if="reportUnread > 0"
+            class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground"
+          >
             {{ reportUnread }}
           </span>
         </TabsTrigger>
-        <TabsTrigger value="notes" class="relative">
+        <TabsTrigger
+          value="notes"
+          class="relative"
+        >
           投資記事
-          <span v-if="noteUnread > 0" class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground">
+          <span
+            v-if="noteUnread > 0"
+            class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground"
+          >
             {{ noteUnread }}
           </span>
         </TabsTrigger>
       </TabsList>
 
       <!-- 選股週報 -->
-      <TabsContent value="reports" class="flex flex-col gap-3">
+      <TabsContent
+        value="reports"
+        class="flex flex-col gap-3"
+      >
         <template v-if="reportsLoading">
-          <Card v-for="i in 2" :key="i">
+          <Card
+            v-for="i in 2"
+            :key="i"
+          >
             <CardHeader class="pb-2">
               <div class="flex items-center gap-3">
                 <Skeleton class="h-10 w-10 rounded-2xl" />
@@ -119,25 +155,46 @@ const noteReadIds = computed((): string[] => noteReadStatus.value?.readIds ?? []
         </template>
 
         <!-- 錯誤狀態 -->
-        <div v-else-if="reportsError" class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6">
-          <p class="text-sm text-muted-foreground">週報載入失敗：{{ reportsError.message }}</p>
+        <div
+          v-else-if="reportsError"
+          class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6"
+        >
+          <p class="text-sm text-muted-foreground">
+            週報載入失敗：{{ reportsError.message }}
+          </p>
         </div>
 
         <!-- 週報列表 -->
         <template v-else-if="reportsData?.reports?.length">
-          <ReportCard v-for="report in reportsData.reports" :key="report.id" :report="report" :is-unread="!reportReadIds.includes(report.id)" />
+          <ReportCard
+            v-for="report in reportsData.reports"
+            :key="report.id"
+            :report="report"
+            :is-unread="!reportReadIds.includes(report.id)"
+          />
         </template>
 
         <!-- 空狀態 -->
-        <div v-else class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8">
-          <p class="text-sm text-muted-foreground">尚無週報資料</p>
+        <div
+          v-else
+          class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8"
+        >
+          <p class="text-sm text-muted-foreground">
+            尚無週報資料
+          </p>
         </div>
       </TabsContent>
 
       <!-- 投資記事 -->
-      <TabsContent value="notes" class="flex flex-col gap-3">
+      <TabsContent
+        value="notes"
+        class="flex flex-col gap-3"
+      >
         <template v-if="notesLoading">
-          <Card v-for="i in 3" :key="i">
+          <Card
+            v-for="i in 3"
+            :key="i"
+          >
             <CardHeader class="pb-2">
               <div class="flex items-center gap-3">
                 <Skeleton class="h-10 w-10 rounded-2xl" />
@@ -152,14 +209,29 @@ const noteReadIds = computed((): string[] => noteReadStatus.value?.readIds ?? []
             </CardContent>
           </Card>
         </template>
-        <div v-else-if="notesError" class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6">
-          <p class="text-sm text-muted-foreground">記事載入失敗：{{ notesError.message }}</p>
+        <div
+          v-else-if="notesError"
+          class="flex items-center justify-center rounded-xl bg-brand-muted px-4 py-6"
+        >
+          <p class="text-sm text-muted-foreground">
+            記事載入失敗：{{ notesError.message }}
+          </p>
         </div>
         <template v-else-if="notesData?.notes?.length">
-          <NoteCard v-for="n in notesData.notes" :key="n.id" :note="n" :is-unread="!noteReadIds.includes(n.id)" />
+          <NoteCard
+            v-for="n in notesData.notes"
+            :key="n.id"
+            :note="n"
+            :is-unread="!noteReadIds.includes(n.id)"
+          />
         </template>
-        <div v-else class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8">
-          <p class="text-sm text-muted-foreground">尚無記事資料</p>
+        <div
+          v-else
+          class="flex items-center justify-center rounded-xl bg-muted/50 px-4 py-8"
+        >
+          <p class="text-sm text-muted-foreground">
+            尚無記事資料
+          </p>
         </div>
       </TabsContent>
     </Tabs>

@@ -31,8 +31,15 @@ function handleSelect(): void {
     @click="handleSelect"
   >
     <slot />
-    <span v-if="isSelected" class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-      <Check :size="12" :stroke-width="2.5" class="text-brand" />
+    <span
+      v-if="isSelected"
+      class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center"
+    >
+      <Check
+        :size="12"
+        :stroke-width="2.5"
+        class="text-brand"
+      />
     </span>
   </button>
 </template>

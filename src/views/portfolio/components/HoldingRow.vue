@@ -24,15 +24,22 @@ defineEmits<{
           {{ props.holding.symbol.slice(0, 2) }}
         </div>
         <div>
-          <p class="text-sm font-semibold text-foreground">{{ props.holding.name }}</p>
+          <p class="text-sm font-semibold text-foreground">
+            {{ props.holding.name }}
+          </p>
           <p class="text-xs text-muted-foreground">
             {{ props.holding.symbol }} · {{ props.holding.shares.toLocaleString() }} 股
           </p>
         </div>
       </div>
       <div class="text-right">
-        <p class="text-sm font-semibold tabular-nums text-foreground">{{ props.holding.currentPrice }}</p>
-        <Badge :variant="props.holding.profitLoss >= 0 ? 'gain' : 'loss'" class="mt-0.5">
+        <p class="text-sm font-semibold tabular-nums text-foreground">
+          {{ props.holding.currentPrice }}
+        </p>
+        <Badge
+          :variant="props.holding.profitLoss >= 0 ? 'gain' : 'loss'"
+          class="mt-0.5"
+        >
           {{ props.holding.profitLoss >= 0 ? '+' : '' }}{{ props.holding.profitLossPercent.toFixed(2) }}%
         </Badge>
       </div>
